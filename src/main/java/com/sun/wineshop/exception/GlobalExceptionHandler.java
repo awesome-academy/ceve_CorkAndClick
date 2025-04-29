@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
         BaseApiResponse<Void> baseApiResponse = new BaseApiResponse<>();
         baseApiResponse.setCode(errorCode.getCode());
         baseApiResponse.setMessage(errorCode.getMessage());
+
         return ResponseEntity.badRequest().body(baseApiResponse);
     }
 
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
         BaseApiResponse<?> baseApiResponse = new BaseApiResponse<>();
         baseApiResponse.setCode(ErrorCode.UNCATEGORIZED.getCode());
         baseApiResponse.setMessage(ErrorCode.UNCATEGORIZED.getMessage());
+
         return ResponseEntity.badRequest().body(baseApiResponse);
     }
 
@@ -40,6 +42,7 @@ public class GlobalExceptionHandler {
         BaseApiResponse<?> baseApiResponse = new BaseApiResponse<>();
         baseApiResponse.setCode(errorCode.getCode());
         baseApiResponse.setMessage(errorCode.getMessage());
+
         return ResponseEntity.badRequest().body(baseApiResponse);
     }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class BaseApiResponse <T> {
-    private int code = 200;
+    private int code;
     private T data;
     private String message;
 }

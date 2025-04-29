@@ -2,7 +2,6 @@ package com.sun.wineshop.exception;
 
 import lombok.Getter;
 
-
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED(9999, "An unexpected error occurred"),

@@ -1,6 +1,6 @@
 package com.sun.wineshop.repository;
 
-import com.sun.wineshop.entity.User;
+import com.sun.wineshop.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
