@@ -2,7 +2,7 @@ package com.sun.wineshop.service;
 
 import com.sun.wineshop.dto.request.CreateUserRequest;
 import com.sun.wineshop.dto.response.UserResponse;
-import com.sun.wineshop.mapper.UserMapper;
+import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.User;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
@@ -35,11 +35,11 @@ public class UserService {
                 .build();
         User savedUser = userRepository.save(user);
 
-        return UserMapper.toUserResponse(savedUser);
+        return ToDtoMappers.toUserResponse(savedUser);
     }
 
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
-        return users.map(UserMapper::toUserResponse);
+        return users.map(ToDtoMappers::toUserResponse);
     }
 }
