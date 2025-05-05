@@ -1,7 +1,7 @@
 package com.sun.wineshop.service;
 
 import com.sun.wineshop.dto.response.ProductResponse;
-import com.sun.wineshop.mapper.ProductMapper;
+import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +15,6 @@ public class ProductService {
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable)
-                .map(ProductMapper::toProductResponse);
+                .map(ToDtoMappers::toProductResponse);
     }
 }
