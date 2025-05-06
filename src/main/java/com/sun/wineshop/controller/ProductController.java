@@ -1,5 +1,6 @@
 package com.sun.wineshop.controller;
 
+import com.sun.wineshop.dto.request.ProductFilterRequest;
 import com.sun.wineshop.dto.response.ProductResponse;
 import com.sun.wineshop.service.ProductService;
 import com.sun.wineshop.utils.api.ProductApiPaths;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +23,13 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.getAllProducts(pageable));
+    }
+
+    @GetMapping(ProductApiPaths.Endpoint.SEARCH)
+    public ResponseEntity<Page<ProductResponse>> searchProducts(
+        @ModelAttribute ProductFilterRequest request,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(productService.searchProducts(request, pageable));
     }
 }

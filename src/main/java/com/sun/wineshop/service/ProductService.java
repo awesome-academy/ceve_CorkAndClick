@@ -1,5 +1,6 @@
 package com.sun.wineshop.service;
 
+import com.sun.wineshop.dto.request.ProductFilterRequest;
 import com.sun.wineshop.dto.response.ProductResponse;
 import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.repository.ProductRepository;
@@ -15,6 +16,18 @@ public class ProductService {
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable)
-                .map(ToDtoMappers::toProductResponse);
+            .map(ToDtoMappers::toProductResponse);
+    }
+
+    public Page<ProductResponse> searchProducts(ProductFilterRequest request, Pageable pageable) {
+        return productRepository.searchProducts(
+            request.name(),
+            request.minPrice(),
+            request.maxPrice(),
+            request.minAlcoholPercentage(),
+            request.maxAlcoholPercentage(),
+            request.categoryId(),
+            pageable
+        ).map(ToDtoMappers::toProductResponse);
     }
 }
