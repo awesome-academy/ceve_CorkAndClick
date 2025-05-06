@@ -22,8 +22,9 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(Long id) {
-        final Product product = productRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return ToDtoMappers.toProductResponse(product);
+        return productRepository.findById(id)
+            .map(ToDtoMappers::toProductResponse)
+            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
     }
 }
