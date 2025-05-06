@@ -2,7 +2,7 @@ package com.sun.wineshop.dto.request;
 
 import java.util.List;
 
-public record ProductFilterRequest(
+public record ProductSearchRequest(
     String name,
     Double minPrice,
     Double maxPrice,
