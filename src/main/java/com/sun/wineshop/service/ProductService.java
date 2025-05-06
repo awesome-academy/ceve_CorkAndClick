@@ -1,7 +1,10 @@
 package com.sun.wineshop.service;
 
 import com.sun.wineshop.dto.response.ProductResponse;
+import com.sun.wineshop.exception.AppException;
+import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
+import com.sun.wineshop.model.entity.Product;
 import com.sun.wineshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,5 +19,12 @@ public class ProductService {
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable)
                 .map(ToDtoMappers::toProductResponse);
+    }
+
+    public ProductResponse getProductById(Long id) {
+        return productRepository.findById(id)
+            .map(ToDtoMappers::toProductResponse)
+            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
     }
 }
