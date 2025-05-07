@@ -12,20 +12,14 @@ public enum ErrorCode {
     USERNAME_BLANK(40102, "User name can not be blank!"),
     PASSWORD_INVALID_SIZE(40103, "Password must be at least 8 characters!"),
     USER_NOT_EXIST(40104, "User not exist!"),
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "Product not found.");
+    PRODUCT_NOT_FOUND(404, "Product not found."),
+    CART_NOT_FOUND(404, "Cart not found."),
+    PRODUCT_NOT_FOUND_IN_CART(404, "Product not found in Cart.");
 
-    private final HttpStatus httpStatus;
     private final int code;
     private final String message;
 
     ErrorCode(int code, String message) {
-        this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        this.code = code;
-        this.message = message;
-    }
-
-    ErrorCode(HttpStatus httpStatus, int code, String message) {
-        this.httpStatus = httpStatus;
         this.code = code;
         this.message = message;
     }
