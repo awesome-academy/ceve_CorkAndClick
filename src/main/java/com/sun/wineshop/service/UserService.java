@@ -6,6 +6,7 @@ import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.User;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
+import com.sun.wineshop.model.enums.UserRole;
 import com.sun.wineshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public class UserService {
                 .address(request.address())
                 .birthday(request.birthday())
                 .password(passwordService.encodePassword(request.password()))
+                .role(UserRole.USER.name())
                 .build();
         User savedUser = userRepository.save(user);
 
@@ -40,6 +42,7 @@ public class UserService {
 
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
+
         return users.map(ToDtoMappers::toUserResponse);
     }
 }

@@ -5,7 +5,11 @@ public class AuthApiPaths {
 
     public static class Endpoint {
         public static final String LOGIN = "/login";
-        public static final String REGISTER = "/register";
+        public static final String VERIFY_TOKEN = "/verify-token";
         public static final String LOGOUT = "/logout";
+
+        // Use in security config.
+        public static final String FULL_LOGIN = BASE + LOGIN;
+        public static final String FULL_VERIFY_TOKEN = BASE + VERIFY_TOKEN;
     }
 }

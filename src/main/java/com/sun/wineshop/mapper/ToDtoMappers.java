@@ -20,7 +20,8 @@ public class ToDtoMappers {
                 user.getEmail(),
                 user.getPhone(),
                 user.getAddress(),
-                user.getBirthday()
+                user.getBirthday(),
+                user.getRole()
         );
     }
 
