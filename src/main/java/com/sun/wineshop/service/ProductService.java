@@ -2,42 +2,11 @@ package com.sun.wineshop.service;
 
 import com.sun.wineshop.dto.request.ProductSearchRequest;
 import com.sun.wineshop.dto.response.ProductResponse;
-import com.sun.wineshop.exception.AppException;
-import com.sun.wineshop.exception.ErrorCode;
-import com.sun.wineshop.mapper.ToDtoMappers;
-import com.sun.wineshop.model.entity.Product;
-import com.sun.wineshop.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class ProductService {
-    private final ProductRepository productRepository;
-
-    public Page<ProductResponse> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
-            .map(ToDtoMappers::toProductResponse);
-    }
-
-    public Page<ProductResponse> searchProducts(ProductSearchRequest request, Pageable pageable) {
-        return productRepository.searchProducts(
-            request.name(),
-            request.minPrice(),
-            request.maxPrice(),
-            request.minAlcoholPercentage(),
-            request.maxAlcoholPercentage(),
-            request.categoryId(),
-            pageable
-        ).map(ToDtoMappers::toProductResponse);
-    }
-
-    public ProductResponse getProductById(Long id) {
-        return productRepository.findById(id)
-            .map(ToDtoMappers::toProductResponse)
-            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-
-    }
+public interface ProductService {
+    Page<ProductResponse> getAllProducts(Pageable pageable);
+    Page<ProductResponse> searchProducts(ProductSearchRequest request, Pageable pageable);
+    ProductResponse getProductById(Long id);
 }
