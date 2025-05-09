@@ -54,7 +54,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
         boolean isSuccess = passwordService.matches(request.password(), user.getPassword());
         if (!isSuccess)
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.LOGIN_FAILED);
         String token = generateToken(user);
 
         return new LoginResponse(true, token);
