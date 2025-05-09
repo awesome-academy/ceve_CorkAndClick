@@ -1,8 +1,11 @@
 package com.sun.wineshop.controller;
 
+import com.nimbusds.jose.JOSEException;
 import com.sun.wineshop.dto.request.LoginRequest;
+import com.sun.wineshop.dto.request.VerifyTokenRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.LoginResponse;
+import com.sun.wineshop.dto.response.VerifyTokenResponse;
 import com.sun.wineshop.service.AuthenticationService;
 import com.sun.wineshop.utils.api.AuthApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+
 @RestController
 @RequestMapping(AuthApiPaths.BASE)
 public class AuthenticationController {
@@ -22,10 +27,18 @@ public class AuthenticationController {
 
     @PostMapping(AuthApiPaths.Endpoint.LOGIN)
     public ResponseEntity<BaseApiResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        LoginResponse result = authenticationService.login(loginRequest);
-        BaseApiResponse<LoginResponse> response = new BaseApiResponse<>();
-        response.setCode(HttpStatus.OK.value());
-        response.setData(result);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                authenticationService.login(loginRequest)
+        ));
+    }
+
+    @PostMapping(AuthApiPaths.Endpoint.VERIFY_TOKEN)
+    public ResponseEntity<BaseApiResponse<VerifyTokenResponse>> verifyToken(@RequestBody VerifyTokenRequest request)
+            throws JOSEException, ParseException {
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                authenticationService.verifyToken(request)
+        ));
     }
 }
