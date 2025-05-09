@@ -1,11 +1,14 @@
 package com.sun.wineshop.configuration;
 
+import com.sun.wineshop.exception.GlobalExceptionHandler;
 import com.sun.wineshop.model.enums.UserRole;
+import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.UserApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,7 +17,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -25,6 +30,7 @@ import static com.sun.wineshop.utils.api.UserApiPaths.Endpoint.FULL_REGISTER;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final SecurityProperties securityProperties;
@@ -32,6 +38,18 @@ public class SecurityConfig {
     private static final String ALGORITHM = "HS512";
 
     private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN};
+
+    private final MessageUtil messageUtil;
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new JwtAuthenticationEntryPoint(messageUtil);
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler(messageUtil);
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,9 +64,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
         http.oauth2ResourceServer(oAuth2 ->
                 oAuth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(authenticationEntryPoint()));
         http.csrf(AbstractHttpConfigurer::disable);
-
+        http.exceptionHandling(exception -> {
+            exception.accessDeniedHandler(accessDeniedHandler());
+        });
         return http.build();
     }
 

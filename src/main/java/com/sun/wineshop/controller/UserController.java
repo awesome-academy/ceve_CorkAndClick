@@ -23,13 +23,29 @@ public class UserController {
     @PostMapping(UserApiPaths.Endpoint.REGISTER)
     public ResponseEntity<BaseApiResponse<UserResponse>> createUser(@RequestBody @Valid CreateUserRequest request) {
         return ResponseEntity.ok(new BaseApiResponse<>(
-            HttpStatus.OK.value(),
-            userService.createUser(request)
+                HttpStatus.OK.value(),
+                userService.createUser(request)
         ));
     }
 
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                userService.getUserByUserId(id)
+        ));
+    }
+
+    @GetMapping(UserApiPaths.Endpoint.INFO)
+    public ResponseEntity<BaseApiResponse<UserResponse>> getInfoCurrentUser() {
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                userService.getCurrentUser()
+        ));
     }
 }
