@@ -3,6 +3,7 @@ package com.sun.wineshop.configuration;
 import com.sun.wineshop.exception.GlobalExceptionHandler;
 import com.sun.wineshop.model.enums.UserRole;
 import com.sun.wineshop.utils.MessageUtil;
+import com.sun.wineshop.utils.api.AdminApiPaths;
 import com.sun.wineshop.utils.api.UserApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +60,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.PUT, BASE).permitAll()
                         // add end points for admin here
-                        .requestMatchers(HttpMethod.GET, UserApiPaths.BASE)
+                        .requestMatchers(AdminApiPaths.BASE_ALL)
                         .hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated());
         http.oauth2ResourceServer(oAuth2 ->

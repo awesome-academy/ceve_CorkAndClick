@@ -8,11 +8,9 @@ import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.model.enums.UserRole;
 import com.sun.wineshop.repository.UserRepository;
-import com.sun.wineshop.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +47,6 @@ public class UserService {
         return users.map(ToDtoMappers::toUserResponse);
     }
 
-    @PreAuthorize("hasRole('" + AppConstants.ADMIN + "')")
     public UserResponse getUserByUserId(Long userId) {
         return ToDtoMappers.toUserResponse(userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST)));

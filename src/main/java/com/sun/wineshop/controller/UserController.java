@@ -7,8 +7,6 @@ import com.sun.wineshop.service.UserService;
 import com.sun.wineshop.utils.api.UserApiPaths;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +23,6 @@ public class UserController {
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
                 userService.createUser(request)
-        ));
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllUsers(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<BaseApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(new BaseApiResponse<>(
-                HttpStatus.OK.value(),
-                userService.getUserByUserId(id)
         ));
     }
 
