@@ -1,14 +1,12 @@
 package com.sun.wineshop.configuration;
 
-import com.sun.wineshop.exception.GlobalExceptionHandler;
 import com.sun.wineshop.model.enums.UserRole;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.AdminApiPaths;
-import com.sun.wineshop.utils.api.UserApiPaths;
+import com.sun.wineshop.utils.api.ProductApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,7 +23,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import javax.crypto.spec.SecretKeySpec;
 
 import static com.sun.wineshop.utils.api.AuthApiPaths.Endpoint.*;
-import static com.sun.wineshop.utils.api.UserApiPaths.BASE;
 import static com.sun.wineshop.utils.api.UserApiPaths.Endpoint.FULL_REGISTER;
 
 @Configuration
@@ -38,7 +35,7 @@ public class SecurityConfig {
     private static final String ROLE = "ROLE_";
     private static final String ALGORITHM = "HS512";
 
-    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN};
+    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE};
 
     private final MessageUtil messageUtil;
 
@@ -57,8 +54,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requests ->
                 requests
                         // add end points with not auth here
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.PUT, BASE).permitAll()
+                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         // add end points for admin here
                         .requestMatchers(AdminApiPaths.BASE_ALL)
                         .hasRole(UserRole.ADMIN.name())
