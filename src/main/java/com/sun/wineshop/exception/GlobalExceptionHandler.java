@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler( AccessDeniedException.class)
     public ResponseEntity<BaseApiResponse<Void>> handleAccessDeniedException(AccessDeniedException e) {
-        ErrorCode errorCode = ErrorCode.ASSESS_DENIED;
+        ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
 
         BaseApiResponse<Void> response = new BaseApiResponse<>();
         response.setCode(errorCode.getCode());

@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AdminApiPaths.BASE)
-public class AdminController {
+@RequestMapping(AdminApiPaths.User.BASE)
+public class UserController {
 
     private final UserService userService;
 
-    @GetMapping(AdminApiPaths.User.BASE)
+    @GetMapping()
     public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }

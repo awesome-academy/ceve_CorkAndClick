@@ -17,7 +17,7 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND_IN_CART(404, "error.product.not.in.cart"),
     LOGIN_FAILED(401, "error.login.failed"),
     CAN_NOT_CREATE_TOKEN(500, "error.can.not.create.token"),
-    ASSESS_DENIED(403, "error.access.denied"),
+    ACCESS_DENIED(403, "error.access.denied"),
     UNAUTHORIZED(401, "error.unauthorized");
 
     private final int code;
