@@ -9,11 +9,24 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
+
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private final MessageUtil messageUtil;
+
+    @ExceptionHandler( AccessDeniedException.class)
+    public ResponseEntity<BaseApiResponse<Void>> handleAccessDeniedException(AccessDeniedException e) {
+        ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
+
+        BaseApiResponse<Void> response = new BaseApiResponse<>();
+        response.setCode(errorCode.getCode());
+        response.setMessage(messageUtil.getMessage(errorCode.getMessageKey()));
+
+        return ResponseEntity.status(errorCode.getCode()).body(response);
+    }
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<BaseApiResponse<Void>> handleAppException(AppException exception) {
@@ -54,5 +67,16 @@ public class GlobalExceptionHandler {
         response.setMessage(messageUtil.getMessage(errorCode.getMessageKey()));
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<BaseApiResponse<Void>> handleRuntimeException(RuntimeException e) {
+        ErrorCode errorCode = ErrorCode.UNCATEGORIZED;
+
+        BaseApiResponse<Void> response = new BaseApiResponse<>();
+        response.setCode(errorCode.getCode());
+        response.setMessage(messageUtil.getMessage(errorCode.getMessageKey()));
+
+        return ResponseEntity.status(errorCode.getCode()).body(response);
     }
 }

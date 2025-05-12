@@ -11,6 +11,7 @@ import com.sun.wineshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,5 +45,17 @@ public class UserService {
         Page<User> users = userRepository.findAll(pageable);
 
         return users.map(ToDtoMappers::toUserResponse);
+    }
+
+    public UserResponse getUserByUserId(Long userId) {
+        return ToDtoMappers.toUserResponse(userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST)));
+    }
+
+    public UserResponse getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND_FROM_TOKEN));
+        return ToDtoMappers.toUserResponse(user);
     }
 }
