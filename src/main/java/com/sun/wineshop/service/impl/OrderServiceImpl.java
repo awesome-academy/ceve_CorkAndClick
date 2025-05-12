@@ -5,12 +5,12 @@ import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
+import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.*;
 import com.sun.wineshop.repository.CartRepository;
-import com.sun.wineshop.repository.OrderItemRepository;
 import com.sun.wineshop.repository.OrderRepository;
-import com.sun.wineshop.repository.ProductRepository;
 import com.sun.wineshop.service.OrderService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
 
+    @Transactional
     @Override
     public OrderResponse placeOrder(PlaceOrderRequest request) {
         Cart cart = cartRepository.findByUserId(request.userId())
@@ -60,12 +61,7 @@ public class OrderServiceImpl implements OrderService {
         cartRepository.save(cart);
 
         List<OrderItemResponse> itemResponses = order.getOrderItems().stream()
-                .map(item -> new OrderItemResponse(
-                        item.getProduct().getId(),
-                        item.getProduct().getName(),
-                        item.getQuantity(),
-                        item.getUnitPrice()
-                )).toList();
+                .map(ToDtoMappers::toOrderItemResponse).toList();
 
         return new OrderResponse(order.getId(), totalAmount, order.getStatus().name(), itemResponses);
     }
