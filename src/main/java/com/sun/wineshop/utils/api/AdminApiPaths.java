@@ -13,7 +13,15 @@ public class AdminApiPaths {
     }
 
     public static final class Product {
+        public static final String ADMIN_PRODUCT_CONTROLLER = "adminProductController";
         public static final String BASE = AdminApiPaths.BASE + "/products";
+        public static final String BY_ID = "/{id}";
+        // ...
+    }
+
+    public static final class Category {
+        public static final String ADMIN_CATEGORY_CONTROLLER = "adminCategoryController";
+        public static final String BASE = AdminApiPaths.BASE + "/categories";
         public static final String BY_ID = "/{id}";
         // ...
     }
