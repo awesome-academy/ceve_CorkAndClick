@@ -1,9 +1,11 @@
 package com.sun.wineshop.mapper;
 
 import com.sun.wineshop.dto.response.CategoryResponse;
+import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.ProductResponse;
 import com.sun.wineshop.dto.response.UserResponse;
 import com.sun.wineshop.model.entity.Category;
+import com.sun.wineshop.model.entity.OrderItem;
 import com.sun.wineshop.model.entity.Product;
 import com.sun.wineshop.model.entity.User;
 
@@ -51,6 +53,15 @@ public class ToDtoMappers {
                 category.getId(),
                 category.getName(),
                 category.getDescription()
+        );
+    }
+
+    public static OrderItemResponse toOrderItemResponse(OrderItem item) {
+        return new OrderItemResponse(
+                item.getProduct().getId(),
+                item.getProduct().getName(),
+                item.getQuantity(),
+                item.getUnitPrice()
         );
     }
 }

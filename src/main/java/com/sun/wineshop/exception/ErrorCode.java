@@ -18,7 +18,8 @@ public enum ErrorCode {
     LOGIN_FAILED(401, "error.login.failed"),
     CAN_NOT_CREATE_TOKEN(500, "error.can.not.create.token"),
     ACCESS_DENIED(403, "error.access.denied"),
-    UNAUTHORIZED(401, "error.unauthorized");
+    UNAUTHORIZED(401, "error.unauthorized"),
+    CART_EMPTY(404, "error.cart.empty");
 
     private final int code;
     private final String messageKey;
