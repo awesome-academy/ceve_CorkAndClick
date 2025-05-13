@@ -20,7 +20,9 @@ public enum ErrorCode {
     ACCESS_DENIED(403, "error.access.denied"),
     UNAUTHORIZED(401, "error.unauthorized"),
     CART_EMPTY(404, "error.cart.empty"),
-    ORDER_NOT_FOUND(404, "error.order.not.found");
+    ORDER_NOT_FOUND(404, "error.order.not.found"),
+    CATEGORY_NOT_FOUND(404, "error.category.not.found"),
+    ;
 
     private final int code;
     private final String messageKey;

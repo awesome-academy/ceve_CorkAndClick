@@ -2,6 +2,8 @@ package com.sun.wineshop.service.impl;
 
 import com.sun.wineshop.dto.request.CategoryRequest;
 import com.sun.wineshop.dto.response.CategoryResponse;
+import com.sun.wineshop.exception.AppException;
+import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.Category;
 import com.sun.wineshop.repository.CategoryRepository;
@@ -31,8 +33,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryResponse> getAllCategories(Pageable pageable) {
-        Page<Category> users = categoryRepository.findAll(pageable);
+        Page<Category> categories = categoryRepository.findAll(pageable);
 
-        return users.map(ToDtoMappers::toCategoryResponse);
+        return categories.map(ToDtoMappers::toCategoryResponse);
+    }
+
+    @Override
+    public void updateCategory(Long id, CategoryRequest request) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        category.setName(request.name());
+        category.setDescription(request.description());
+        categoryRepository.save(category);
+    }
+
+    @Override
+    public void deleteCategoryById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+        categoryRepository.deleteById(id);
     }
 }
