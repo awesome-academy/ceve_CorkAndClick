@@ -3,6 +3,7 @@ package com.sun.wineshop.configuration;
 import com.sun.wineshop.model.enums.UserRole;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.AdminApiPaths;
+import com.sun.wineshop.utils.api.CategoryApiPaths;
 import com.sun.wineshop.utils.api.ProductApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +36,8 @@ public class SecurityConfig {
     private static final String ROLE = "ROLE_";
     private static final String ALGORITHM = "HS512";
 
-    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE};
+    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE,
+            CategoryApiPaths.BASE};
 
     private final MessageUtil messageUtil;
 
