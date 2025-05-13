@@ -22,4 +22,20 @@ public abstract class BaseService {
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
     }
+
+    protected BaseService(
+            ProductRepository productRepository,
+            CartRepository cartRepository,
+            OrderRepository orderRepository
+    ) {
+        this(null, productRepository, cartRepository, orderRepository);
+    }
+
+    protected BaseService(
+            UserRepository userRepository,
+            ProductRepository productRepository,
+            CartRepository cartRepository
+    ) {
+        this(userRepository, productRepository, cartRepository, null);
+    }
 }

@@ -27,7 +27,7 @@ public class CartServiceImpl extends BaseService implements CartService {
             ProductRepository productRepository,
             UserRepository userRepository
     ) {
-        super(userRepository, productRepository, cartRepository, null);
+        super(userRepository, productRepository, cartRepository);
     }
 
     @Override

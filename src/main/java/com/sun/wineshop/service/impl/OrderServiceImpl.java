@@ -27,7 +27,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             ProductRepository productRepository,
             OrderRepository orderRepository
     ) {
-        super(null, productRepository, cartRepository, orderRepository);
+        super(productRepository, cartRepository, orderRepository);
     }
 
     @Transactional
