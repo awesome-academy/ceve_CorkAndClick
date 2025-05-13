@@ -37,7 +37,7 @@ public class ToDtoMappers {
                 product.getStockQuantity(),
                 product.getAlcoholPercentage(),
                 categoryResponses,
-                product.getCreatedAt(),
+                product.getCreateAt(),
                 product.getUpdatedAt()
         );
     }

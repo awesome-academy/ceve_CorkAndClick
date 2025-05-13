@@ -22,6 +22,7 @@ public enum ErrorCode {
     CART_EMPTY(404, "error.cart.empty"),
     ORDER_NOT_FOUND(404, "error.order.not.found"),
     CATEGORY_NOT_FOUND(404, "error.category.not.found"),
+    SOME_CATEGORY_NOT_FOUND(404, "error.some.category.not.found"),
     CATEGORY_NAME_INVALID(40200, "error.category.name.invalid"),
     CATEGORY_DESCRIPTION_INVALID(40201, "error.category.description.size"),
     ;

@@ -1,13 +1,22 @@
 package com.sun.wineshop.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "products")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +31,14 @@ public class Product {
     private String origin;
     private String imageUrl;
 
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    LocalDateTime createAt;
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToMany
     @JoinTable(
-            name = "product_category",
+            name = "product_categories",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
