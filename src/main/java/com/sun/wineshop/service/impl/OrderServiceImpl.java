@@ -27,7 +27,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             ProductRepository productRepository,
             OrderRepository orderRepository
     ) {
-        super(productRepository, cartRepository, orderRepository);
+        super(null, productRepository, cartRepository, orderRepository);
     }
 
     @Transactional
@@ -81,7 +81,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public OrderDetailResponse getOrderDetail(Long orderId, Long userId) {
+    public OrderDetailResponse show(Long orderId, Long userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 

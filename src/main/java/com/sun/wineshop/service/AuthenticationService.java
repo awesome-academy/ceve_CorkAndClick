@@ -70,7 +70,9 @@ public class AuthenticationService {
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
                 .claim(CLAIM_SCOPE, user.getRole())
+                .claim("userId", user.getId())
                 .build();
+
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
         try {

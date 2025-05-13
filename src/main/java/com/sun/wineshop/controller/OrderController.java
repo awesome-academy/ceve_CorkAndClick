@@ -5,11 +5,14 @@ import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.service.OrderService;
+import com.sun.wineshop.utils.AppConstants;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.OrderApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,11 +34,12 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<BaseApiResponse<OrderDetailResponse>> getOrderDetail(
-            @RequestParam Long userId,
-            @PathVariable Long orderId
+    public ResponseEntity<BaseApiResponse<OrderDetailResponse>> show(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal Jwt jwt
     ) {
-        OrderDetailResponse response = orderService.getOrderDetail(orderId, userId);
+        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        OrderDetailResponse response = orderService.show(orderId, userId);
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
                 response,

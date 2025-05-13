@@ -6,5 +6,5 @@ import com.sun.wineshop.dto.response.OrderResponse;
 
 public interface OrderService {
     OrderResponse placeOrder(PlaceOrderRequest request);
-    OrderDetailResponse getOrderDetail(Long orderId, Long userId);
+    OrderDetailResponse show(Long orderId, Long userId);
 }
