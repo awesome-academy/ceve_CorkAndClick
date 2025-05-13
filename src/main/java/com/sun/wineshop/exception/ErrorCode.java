@@ -19,7 +19,8 @@ public enum ErrorCode {
     CAN_NOT_CREATE_TOKEN(500, "error.can.not.create.token"),
     ACCESS_DENIED(403, "error.access.denied"),
     UNAUTHORIZED(401, "error.unauthorized"),
-    CART_EMPTY(404, "error.cart.empty");
+    CART_EMPTY(404, "error.cart.empty"),
+    ORDER_NOT_FOUND(404, "error.order.not.found");
 
     private final int code;
     private final String messageKey;
