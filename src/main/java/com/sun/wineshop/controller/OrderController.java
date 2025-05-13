@@ -2,17 +2,18 @@ package com.sun.wineshop.controller;
 
 import com.sun.wineshop.dto.request.PlaceOrderRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
+import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.service.OrderService;
+import com.sun.wineshop.utils.AppConstants;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.OrderApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(OrderApiPaths.BASE)
@@ -29,6 +30,20 @@ public class OrderController {
                 HttpStatus.OK.value(),
                 response,
                 messageUtil.getMessage("order.placed.success")
+        ));
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<BaseApiResponse<OrderDetailResponse>> show(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        OrderDetailResponse response = orderService.show(orderId, userId);
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                response,
+                messageUtil.getMessage("order.detail.fetched.success")
         ));
     }
 }

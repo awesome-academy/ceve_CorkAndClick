@@ -1,6 +1,7 @@
 package com.sun.wineshop.service.impl;
 
 import com.sun.wineshop.dto.request.PlaceOrderRequest;
+import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.exception.AppException;
@@ -9,19 +10,25 @@ import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.*;
 import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.OrderRepository;
+import com.sun.wineshop.repository.ProductRepository;
+import com.sun.wineshop.service.BaseService;
 import com.sun.wineshop.service.OrderService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends BaseService implements OrderService {
 
-    private final OrderRepository orderRepository;
-    private final CartRepository cartRepository;
+    public OrderServiceImpl(
+            CartRepository cartRepository,
+            ProductRepository productRepository,
+            OrderRepository orderRepository
+    ) {
+        super(null, productRepository, cartRepository, orderRepository);
+    }
 
     @Transactional
     @Override
@@ -44,15 +51,22 @@ public class OrderServiceImpl implements OrderService {
                 .phoneNumber(request.phoneNumber())
                 .totalAmount(totalAmount)
                 .status(OrderStatus.PENDING)
+                .orderItems(new ArrayList<>())
                 .build();
 
         for (CartItem cartItem : cart.getItems()) {
+            Product product = cartItem.getProduct();
+
+            if (product == null || product.getId() == null || !productRepository.existsById(product.getId())) {
+                throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
+            }
+
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(cartItem.getProduct())
                     .quantity(cartItem.getQuantity())
                     .unitPrice(cartItem.getProduct().getPrice())
-                    .build();;
+                    .build();
             order.getOrderItems().add(orderItem);
         }
 
@@ -64,5 +78,17 @@ public class OrderServiceImpl implements OrderService {
                 .map(ToDtoMappers::toOrderItemResponse).toList();
 
         return new OrderResponse(order.getId(), totalAmount, order.getStatus().name(), itemResponses);
+    }
+
+    @Override
+    public OrderDetailResponse show(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        return ToDtoMappers.toOrderDetailResponse(order);
     }
 }

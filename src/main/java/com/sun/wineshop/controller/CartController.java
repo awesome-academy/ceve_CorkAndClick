@@ -6,11 +6,14 @@ import com.sun.wineshop.dto.request.UpdateCartItemRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.CartResponse;
 import com.sun.wineshop.service.CartService;
+import com.sun.wineshop.utils.AppConstants;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.CartApiPaths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +35,8 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseApiResponse<CartResponse>> show(@RequestParam Long userId) {
+    public ResponseEntity<BaseApiResponse<CartResponse>> show(@AuthenticationPrincipal Jwt jwt) {
+        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
         CartResponse cart = cartService.getCartByUserId(userId);
 
         return ResponseEntity.ok(new BaseApiResponse<>(

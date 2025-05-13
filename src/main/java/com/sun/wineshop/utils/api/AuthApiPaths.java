@@ -1,7 +1,7 @@
 package com.sun.wineshop.utils.api;
 
 public class AuthApiPaths {
-    public static final String BASE = "/api/auth";
+    public static final String BASE = "/api/v1/auth";
 
     public static class Endpoint {
         public static final String LOGIN = "/login";
