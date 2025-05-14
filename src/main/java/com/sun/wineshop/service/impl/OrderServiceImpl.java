@@ -11,24 +11,21 @@ import com.sun.wineshop.model.entity.*;
 import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.OrderRepository;
 import com.sun.wineshop.repository.ProductRepository;
-import com.sun.wineshop.service.BaseService;
 import com.sun.wineshop.service.OrderService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class OrderServiceImpl extends BaseService implements OrderService {
+@RequiredArgsConstructor
+public class OrderServiceImpl implements OrderService {
 
-    public OrderServiceImpl(
-            CartRepository cartRepository,
-            ProductRepository productRepository,
-            OrderRepository orderRepository
-    ) {
-        super(null, productRepository, cartRepository, orderRepository);
-    }
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional
     @Override

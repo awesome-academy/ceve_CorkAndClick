@@ -13,22 +13,19 @@ import com.sun.wineshop.model.entity.Product;
 import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.ProductRepository;
 import com.sun.wineshop.repository.UserRepository;
-import com.sun.wineshop.service.BaseService;
 import com.sun.wineshop.service.CartService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CartServiceImpl extends BaseService implements CartService {
+@RequiredArgsConstructor
+public class CartServiceImpl implements CartService {
 
-    public CartServiceImpl(
-            CartRepository cartRepository,
-            ProductRepository productRepository,
-            UserRepository userRepository
-    ) {
-        super(userRepository, productRepository, cartRepository, null);
-    }
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void addToCart(AddToCartRequest request) {
