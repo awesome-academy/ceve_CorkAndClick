@@ -7,6 +7,7 @@ import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import com.sun.wineshop.service.OrderService;
 import com.sun.wineshop.utils.AppConstants;
+import com.sun.wineshop.utils.JwtUtil;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.OrderApiPaths;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class OrderController {
             @PathVariable Long orderId,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
         OrderDetailResponse response = orderService.show(orderId, userId);
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
@@ -51,10 +52,16 @@ public class OrderController {
     }
 
     @GetMapping(OrderApiPaths.Endpoint.HISTORY)
-    public ResponseEntity<List<OrderSummaryResponse>> getOrderHistory(
+    public ResponseEntity<BaseApiResponse<List<OrderSummaryResponse>>> getOrderHistory(
             @AuthenticationPrincipal Jwt jwt
     ) {
-        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
-        return ResponseEntity.ok(orderService.getOrderHistory(userId));
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
+        List<OrderSummaryResponse> orders = orderService.getOrderHistory(userId);
+
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                orders,
+                messageUtil.getMessage("order.history.fetched.success")
+        ));
     }
 }

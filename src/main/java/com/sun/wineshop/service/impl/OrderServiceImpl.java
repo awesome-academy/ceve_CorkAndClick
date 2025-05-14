@@ -9,6 +9,7 @@ import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.*;
+import com.sun.wineshop.model.enums.OrderStatus;
 import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.OrderRepository;
 import com.sun.wineshop.repository.ProductRepository;

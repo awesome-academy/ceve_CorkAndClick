@@ -1,5 +1,6 @@
 package com.sun.wineshop.model.entity;
 
+import com.sun.wineshop.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
