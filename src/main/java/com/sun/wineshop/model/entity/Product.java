@@ -32,7 +32,7 @@ public class Product {
     private String imageUrl;
 
     @CreationTimestamp
-    LocalDateTime createAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
