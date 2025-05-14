@@ -4,11 +4,14 @@ import com.sun.wineshop.dto.request.PlaceOrderRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
+import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import com.sun.wineshop.service.OrderService;
 import com.sun.wineshop.utils.AppConstants;
+import com.sun.wineshop.utils.JwtUtil;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.OrderApiPaths;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,12 +41,28 @@ public class OrderController {
             @PathVariable Long orderId,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
         OrderDetailResponse response = orderService.show(orderId, userId);
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
                 response,
                 messageUtil.getMessage("order.detail.fetched.success")
+        ));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseApiResponse<Page<OrderSummaryResponse>>> getOrderHistory(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNumber,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize
+    ) {
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
+        Page<OrderSummaryResponse> orders = orderService.getOrderHistory(userId, pageNumber, pageSize);
+
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                orders,
+                messageUtil.getMessage("order.history.fetched.success")
         ));
     }
 }

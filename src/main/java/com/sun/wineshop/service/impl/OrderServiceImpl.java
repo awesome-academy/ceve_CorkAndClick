@@ -4,16 +4,22 @@ import com.sun.wineshop.dto.request.PlaceOrderRequest;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
+import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
 import com.sun.wineshop.model.entity.*;
+import com.sun.wineshop.model.enums.OrderStatus;
 import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.OrderRepository;
 import com.sun.wineshop.repository.ProductRepository;
 import com.sun.wineshop.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -87,5 +93,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return ToDtoMappers.toOrderDetailResponse(order);
+    }
+
+    @Override
+    public Page<OrderSummaryResponse> getOrderHistory(Long userId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Order> orderPage = orderRepository.findAllByUserId(userId, pageable);
+
+        return orderPage.map(ToDtoMappers::toOrderSummaryResponse);
     }
 }

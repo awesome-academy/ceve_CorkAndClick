@@ -7,4 +7,8 @@ public class AppConstants {
 
     // JWT keys
     public static final String JWT_USER_ID = "userId";
+
+    //Pageable
+    public static final String DEFAULT_PAGE_NUMBER = "0";
+    public static final String DEFAULT_PAGE_SIZE = "10";
 }

@@ -7,6 +7,7 @@ import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.CartResponse;
 import com.sun.wineshop.service.CartService;
 import com.sun.wineshop.utils.AppConstants;
+import com.sun.wineshop.utils.JwtUtil;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.CartApiPaths;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class CartController {
 
     @GetMapping
     public ResponseEntity<BaseApiResponse<CartResponse>> show(@AuthenticationPrincipal Jwt jwt) {
-        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
         CartResponse cart = cartService.getCartByUserId(userId);
 
         return ResponseEntity.ok(new BaseApiResponse<>(

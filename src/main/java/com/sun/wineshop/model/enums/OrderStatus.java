@@ -1,4 +1,4 @@
-package com.sun.wineshop.model.entity;
+package com.sun.wineshop.model.enums;
 
 public enum OrderStatus {
     PENDING, PAID, DELIVERING, DELIVERED, CANCELLED
