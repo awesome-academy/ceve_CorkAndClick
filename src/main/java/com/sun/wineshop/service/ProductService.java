@@ -11,4 +11,6 @@ public interface ProductService {
     Page<ProductResponse> searchProducts(ProductSearchRequest request, Pageable pageable);
     ProductResponse getProductById(Long id);
     ProductResponse createProduct(ProductRequest request);
+    ProductResponse updateProduct(Long id, ProductRequest request);
+    void deleteProduct(Long id);
 }

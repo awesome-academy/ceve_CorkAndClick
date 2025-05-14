@@ -24,6 +24,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(404, "error.category.not.found"),
     CATEGORY_NAME_INVALID(40200, "error.category.name.invalid"),
     CATEGORY_DESCRIPTION_INVALID(40201, "error.category.description.size"),
+    CATEGORY_IN_USE(40202, "error.category.in.use"),
     ORDER_CANNOT_BE_CANCELLED(400, "order.not.cancelled"),
 
     // Product
@@ -37,6 +38,7 @@ public enum ErrorCode {
     PRODUCT_ALCOHOL_PERCENTAGE_INVALID(40307, "error.product.alcohol.percentage.invalid"),
     PRODUCT_CATEGORIES_REQUIRED(40308, "error.product.categories.required"),
     PRODUCT_CATEGORY_ID_NULL(40309, "error.product.category.id.null"),
+    PRODUCT_IN_USE(40310, "error.product.in.use"),
     ;
 
     private final int code;
