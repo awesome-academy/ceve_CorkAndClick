@@ -24,6 +24,18 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(404, "error.category.not.found"),
     CATEGORY_NAME_INVALID(40200, "error.category.name.invalid"),
     CATEGORY_DESCRIPTION_INVALID(40201, "error.category.description.size"),
+
+    // Product
+    PRODUCT_NAME_INVALID(40300, "error.product.name.invalid"),
+    PRODUCT_DESCRIPTION_INVALID(40301, "error.product.description.invalid"),
+    PRODUCT_IMAGE_URL_INVALID(40302, "error.product.image.url.invalid"),
+    PRODUCT_PRICE_INVALID(40303, "error.product.price.invalid"),
+    PRODUCT_ORIGIN_INVALID(40304, "error.product.origin.invalid"),
+    PRODUCT_VOLUME_INVALID(40305, "error.product.volume.invalid"),
+    PRODUCT_STOCK_INVALID(40306, "error.product.stock.invalid"),
+    PRODUCT_ALCOHOL_PERCENTAGE_INVALID(40307, "error.product.alcohol.percentage.invalid"),
+    PRODUCT_CATEGORIES_REQUIRED(40308, "error.product.categories.required"),
+    PRODUCT_CATEGORY_ID_NULL(40309, "error.product.category.id.null"),
     ;
 
     private final int code;
