@@ -8,4 +8,6 @@ import org.springframework.data.domain.Pageable;
 public interface CategoryService {
     CategoryResponse createCategory(CategoryRequest request);
     Page<CategoryResponse> getAllCategories(Pageable pageable);
+    void updateCategory(Long id, CategoryRequest request);
+    void deleteCategoryById(Long id);
 }
