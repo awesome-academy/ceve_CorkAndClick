@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (categories.size() != categoryIds.size()) {
             throw new AppException(
-                    ErrorCode.SOME_CATEGORY_NOT_FOUND
+                    ErrorCode.CATEGORY_NOT_FOUND
             );
         }
         Product product = ToEntityMappers.toProduct(request, categories);
