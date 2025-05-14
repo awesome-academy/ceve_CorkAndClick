@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 import static com.sun.wineshop.mapper.ToDtoMappers.toCategoryResponse;
 
 @Service
@@ -33,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryResponse> getAllCategories(Pageable pageable) {
-        Page<Category> categories = categoryRepository.findAll(pageable);
+        Page<Category> categories = categoryRepository.findAllByDeletedAtIsNull(pageable);
 
         return categories.map(ToDtoMappers::toCategoryResponse);
     }
@@ -49,9 +51,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
-        }
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        category.setDeletedAt(LocalDateTime.now());
+        categoryRepository.save(category);
     }
 }
