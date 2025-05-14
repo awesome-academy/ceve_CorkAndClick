@@ -75,4 +75,13 @@ public class ToDtoMappers {
                 itemResponses
         );
     }
+
+    public static OrderSummaryResponse toOrderSummaryResponse(Order order) {
+        return new OrderSummaryResponse(
+                order.getId(),
+                order.getTotalAmount(),
+                order.getStatus().name(),
+                order.getCreatedAt()
+        );
+    }
 }

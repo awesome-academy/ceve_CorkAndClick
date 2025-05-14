@@ -4,6 +4,7 @@ import com.sun.wineshop.dto.request.PlaceOrderRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
+import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import com.sun.wineshop.service.OrderService;
 import com.sun.wineshop.utils.AppConstants;
 import com.sun.wineshop.utils.MessageUtil;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(OrderApiPaths.BASE)
@@ -45,5 +48,13 @@ public class OrderController {
                 response,
                 messageUtil.getMessage("order.detail.fetched.success")
         ));
+    }
+
+    @GetMapping(OrderApiPaths.Endpoint.HISTORY)
+    public ResponseEntity<List<OrderSummaryResponse>> getOrderHistory(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        Long userId = jwt.getClaim(AppConstants.JWT_USER_ID);
+        return ResponseEntity.ok(orderService.getOrderHistory(userId));
     }
 }

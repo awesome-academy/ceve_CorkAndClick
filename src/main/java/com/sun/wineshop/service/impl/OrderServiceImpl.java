@@ -4,6 +4,7 @@ import com.sun.wineshop.dto.request.PlaceOrderRequest;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
+import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
@@ -87,5 +88,13 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return ToDtoMappers.toOrderDetailResponse(order);
+    }
+
+    @Override
+    public List<OrderSummaryResponse> getOrderHistory(Long userId) {
+        return orderRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(ToDtoMappers::toOrderSummaryResponse)
+                .toList();
     }
 }
