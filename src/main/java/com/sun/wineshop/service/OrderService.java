@@ -10,4 +10,5 @@ public interface OrderService {
     OrderResponse placeOrder(PlaceOrderRequest request);
     OrderDetailResponse show(Long orderId, Long userId);
     Page<OrderSummaryResponse> getOrderHistory(Long userId, int pageNumber, int pageSize);
+    void cancelOrder(Long orderId, Long userId);
 }

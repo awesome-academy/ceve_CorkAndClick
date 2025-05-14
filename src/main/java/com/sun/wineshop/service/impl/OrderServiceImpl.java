@@ -102,4 +102,21 @@ public class OrderServiceImpl implements OrderService {
 
         return orderPage.map(ToDtoMappers::toOrderSummaryResponse);
     }
+
+    @Override
+    public void cancelOrder(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            throw new AppException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
 }

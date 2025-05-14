@@ -65,4 +65,18 @@ public class OrderController {
                 messageUtil.getMessage("order.history.fetched.success")
         ));
     }
+
+    @PutMapping(OrderApiPaths.Endpoint.CANCEL)
+    public ResponseEntity<BaseApiResponse<Void>> cancelOrder(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
+        orderService.cancelOrder(orderId, userId);
+
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                messageUtil.getMessage("order.cancel.success")
+        ));
+    }
 }
