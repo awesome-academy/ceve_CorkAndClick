@@ -24,6 +24,7 @@ public enum ErrorCode {
     CATEGORY_NOT_FOUND(404, "error.category.not.found"),
     CATEGORY_NAME_INVALID(40200, "error.category.name.invalid"),
     CATEGORY_DESCRIPTION_INVALID(40201, "error.category.description.size"),
+    ORDER_CANNOT_BE_CANCELLED(400, "order.not.cancelled"),
 
     // Product
     PRODUCT_NAME_INVALID(40300, "error.product.name.invalid"),
