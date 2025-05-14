@@ -16,6 +16,10 @@ import com.sun.wineshop.repository.ProductRepository;
 import com.sun.wineshop.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -92,10 +96,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderSummaryResponse> getOrderHistory(Long userId) {
-        return orderRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
-                .stream()
-                .map(ToDtoMappers::toOrderSummaryResponse)
-                .toList();
+    public Page<OrderSummaryResponse> getOrderHistory(Long userId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Order> orderPage = orderRepository.findAllByUserId(userId, pageable);
+
+        return orderPage.map(ToDtoMappers::toOrderSummaryResponse);
     }
 }

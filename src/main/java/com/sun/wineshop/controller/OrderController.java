@@ -11,13 +11,12 @@ import com.sun.wineshop.utils.JwtUtil;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.OrderApiPaths;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(OrderApiPaths.BASE)
@@ -51,12 +50,14 @@ public class OrderController {
         ));
     }
 
-    @GetMapping(OrderApiPaths.Endpoint.HISTORY)
-    public ResponseEntity<BaseApiResponse<List<OrderSummaryResponse>>> getOrderHistory(
-            @AuthenticationPrincipal Jwt jwt
+    @GetMapping
+    public ResponseEntity<BaseApiResponse<Page<OrderSummaryResponse>>> getOrderHistory(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNumber,
+            @RequestParam(defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize
     ) {
         Long userId = JwtUtil.extractUserIdFromJwt(jwt);
-        List<OrderSummaryResponse> orders = orderService.getOrderHistory(userId);
+        Page<OrderSummaryResponse> orders = orderService.getOrderHistory(userId, pageNumber, pageSize);
 
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
