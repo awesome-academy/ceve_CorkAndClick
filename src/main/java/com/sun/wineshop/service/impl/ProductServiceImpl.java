@@ -1,7 +1,8 @@
 package com.sun.wineshop.service.impl;
 
-import com.sun.wineshop.dto.request.ProductRequest;
+import com.sun.wineshop.dto.request.CreateProductRequest;
 import com.sun.wineshop.dto.request.ProductSearchRequest;
+import com.sun.wineshop.dto.request.UpdateProductRequest;
 import com.sun.wineshop.dto.response.ProductResponse;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse createProduct(ProductRequest request) {
+    public ProductResponse createProduct(CreateProductRequest request) {
         List<Long> categoryIds = request.categoryIds();
         List<Category> categories = categoryRepository.findAllById(categoryIds);
 
@@ -72,16 +74,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(Long id, UpdateProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        List<Long> categoryIds = request.categoryIds();
-        List<Category> categories = categoryRepository.findAllById(categoryIds);
-        if (categories.size() != categoryIds.size()) {
-            throw new AppException(
-                    ErrorCode.CATEGORY_NOT_FOUND
-            );
+        if (request.categoryIds() != null) {
+            List<Long> categoryIdsRequest = request.categoryIds();
+            List<Category> categories = categoryRepository.findAllById(categoryIdsRequest);
+
+            if (categoryIdsRequest.size() != categories.size()) {
+                List<Long> foundIds = categories.stream().map(Category::getId).toList();
+                List<Long> missingIds = categoryIdsRequest.stream()
+                        .filter(idCategory -> !foundIds.contains(idCategory))
+                        .toList();
+
+                String idsString = missingIds.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(", "));
+
+                throw new AppException(ErrorCode.CATEGORY_SOME_NOT_FOUND, idsString);
+            }
+
+            product.setCategories(categories);
         }
 
         product.setName(request.name());
@@ -92,24 +106,27 @@ public class ProductServiceImpl implements ProductService {
         product.setVolume(request.volume());
         product.setStockQuantity(request.stockQuantity());
         product.setAlcoholPercentage(request.alcoholPercentage());
-        product.setCategories(categories);
 
         Product saved = productRepository.save(product);
 
         return ToDtoMappers.toProductResponse(saved);
-
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteProduct(Long id, boolean permanent) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        if (orderItemRepository.existsByProductId(product.getId())) {
-            throw new AppException(ErrorCode.PRODUCT_IN_USE);
+        if (permanent) {
+            if (orderItemRepository.existsByProductId(id)) {
+                throw new AppException(ErrorCode.PRODUCT_IN_USE);
+            }
+            productRepository.delete(product);
+        } else {
+            if (product.getDeletedAt() == null) {
+                product.setDeletedAt(LocalDateTime.now());
+                productRepository.save(product);
+            }
         }
-
-        product.setDeletedAt(LocalDateTime.now());
-        productRepository.save(product);
     }
 }

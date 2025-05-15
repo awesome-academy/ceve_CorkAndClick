@@ -1,6 +1,7 @@
 package com.sun.wineshop.controller.admin;
 
-import com.sun.wineshop.dto.request.ProductRequest;
+import com.sun.wineshop.dto.request.CreateProductRequest;
+import com.sun.wineshop.dto.request.UpdateProductRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.ProductResponse;
 import com.sun.wineshop.service.ProductService;
@@ -21,7 +22,7 @@ public class ProductController {
     private final MessageUtil messageUtil;
 
     @PostMapping
-    private ResponseEntity<BaseApiResponse<ProductResponse>> createProduct(@Valid @RequestBody ProductRequest request) {
+    private ResponseEntity<BaseApiResponse<ProductResponse>> createProduct(@Valid @RequestBody CreateProductRequest request) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new BaseApiResponse<>(
@@ -32,7 +33,7 @@ public class ProductController {
     }
 
     @PutMapping(AdminApiPaths.Product.BY_ID)
-    public ResponseEntity<BaseApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<BaseApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseApiResponse<>(
@@ -43,8 +44,11 @@ public class ProductController {
     }
 
     @DeleteMapping(AdminApiPaths.Product.BY_ID)
-    public ResponseEntity<BaseApiResponse<Void>> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<BaseApiResponse<Void>> deleteProduct(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean permanent
+    ) {
+        productService.deleteProduct(id, permanent);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseApiResponse<>(
