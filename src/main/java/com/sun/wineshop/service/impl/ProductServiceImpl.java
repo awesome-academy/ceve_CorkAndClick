@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
                 request.maxPrice(),
                 request.minAlcoholPercentage(),
                 request.maxAlcoholPercentage(),
-                request.categoryId(),
+                request.categoryIds(),
                 pageable
         ).map(ToDtoMappers::toProductResponse);
     }

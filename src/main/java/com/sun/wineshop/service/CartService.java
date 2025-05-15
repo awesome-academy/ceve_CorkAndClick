@@ -6,8 +6,8 @@ import com.sun.wineshop.dto.request.UpdateCartItemRequest;
 import com.sun.wineshop.dto.response.CartResponse;
 
 public interface CartService {
-    void addToCart(AddToCartRequest request);
+    void addToCart(Long userId, AddToCartRequest request);
     CartResponse getCartByUserId(Long userId);
-    void updateCartItemQuantity(UpdateCartItemRequest request);
-    void removeItemFromCart(RemoveCartItemRequest request);
+    void updateCartItemQuantity(Long userId, UpdateCartItemRequest request);
+    void removeItemFromCart(Long userId, RemoveCartItemRequest request);
 }

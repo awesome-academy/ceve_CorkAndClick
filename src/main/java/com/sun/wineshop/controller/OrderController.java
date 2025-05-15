@@ -27,8 +27,10 @@ public class OrderController {
     private final MessageUtil messageUtil;
 
     @PostMapping
-    public ResponseEntity<BaseApiResponse<OrderResponse>> placeOrder(@RequestBody PlaceOrderRequest request) {
-        OrderResponse response = orderService.placeOrder(request);
+    public ResponseEntity<BaseApiResponse<OrderResponse>> placeOrder(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody PlaceOrderRequest request) {
+        OrderResponse response = orderService.placeOrder(JwtUtil.extractUserIdFromJwt(jwt), request);
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
                 response,

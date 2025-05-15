@@ -8,5 +8,5 @@ public record ProductSearchRequest(
     Double maxPrice,
     Double minAlcoholPercentage,
     Double maxAlcoholPercentage,
-    List<Long> categoryId
+    List<Long> categoryIds
 ){}

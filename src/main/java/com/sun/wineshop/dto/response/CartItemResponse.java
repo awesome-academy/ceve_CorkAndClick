@@ -5,5 +5,6 @@ public record CartItemResponse(
     String productName,
     String imageUrl,
     Double price,
-    int quantity
+    int quantity,
+    boolean isAvailable
 ) {}
