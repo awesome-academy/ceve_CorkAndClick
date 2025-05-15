@@ -28,11 +28,11 @@ public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
 
     @Override
-    public void addToCart(AddToCartRequest request) {
-        var user = userRepository.findById(request.userId())
+    public void addToCart(Long userId, AddToCartRequest request) {
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
 
-        var product = productRepository.findById(request.productId())
+        var product = productRepository.findByIdAndDeletedAtIsNull(request.productId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         var cart = cartRepository.findByUserId(user.getId())
@@ -75,12 +75,14 @@ public class CartServiceImpl implements CartService {
 
         List<CartItemResponse> itemResponses = cart.getItems().stream()
                 .map(item -> new CartItemResponse(
-                        item.getProduct().getId(),
-                        item.getProduct().getName(),
-                        item.getProduct().getImageUrl(),
-                        item.getProduct().getPrice(),
-                        item.getQuantity()
-                )).toList();
+                                item.getProduct().getId(),
+                                item.getProduct().getName(),
+                                item.getProduct().getImageUrl(),
+                                item.getProduct().getPrice(),
+                                item.getQuantity(),
+                                item.getProduct().getDeletedAt() == null
+                        )
+                ).toList();
 
         double total = itemResponses.stream()
                 .mapToDouble(i -> i.price() * i.quantity())
@@ -90,8 +92,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void updateCartItemQuantity(UpdateCartItemRequest request) {
-        Cart cart = cartRepository.findByUserId(request.userId())
+    public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
         CartItem item = cart.getItems().stream()
@@ -123,8 +125,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeItemFromCart(RemoveCartItemRequest request) {
-        Cart cart = cartRepository.findByUserId(request.userId())
+    public void removeItemFromCart(Long userId, RemoveCartItemRequest request) {
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
         boolean removed = cart.getItems().removeIf(i -> i.getProduct().getId().equals(request.productId()));

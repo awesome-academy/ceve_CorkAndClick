@@ -35,8 +35,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponse placeOrder(PlaceOrderRequest request) {
-        Cart cart = cartRepository.findByUserId(request.userId())
+    public OrderResponse placeOrder(Long userId, PlaceOrderRequest request) {
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
         if (cart.getItems().isEmpty()) {
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
                 .sum();
 
         Order order = Order.builder()
-                .userId(request.userId())
+                .userId(userId)
                 .recipientName(request.recipientName())
                 .address(request.address())
                 .phoneNumber(request.phoneNumber())

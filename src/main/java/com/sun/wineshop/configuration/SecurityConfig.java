@@ -36,7 +36,7 @@ public class SecurityConfig {
     private static final String ROLE = "ROLE_";
     private static final String ALGORITHM = "HS512";
 
-    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE,
+    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE_ALL,
             CategoryApiPaths.BASE};
 
     private final MessageUtil messageUtil;

@@ -26,8 +26,10 @@ public class CartController {
     private final MessageUtil messageUtil;
 
     @PostMapping(CartApiPaths.Endpoint.ADD)
-    public ResponseEntity<BaseApiResponse<String>> addToCart(@RequestBody AddToCartRequest request) {
-        cartService.addToCart(request);
+    public ResponseEntity<BaseApiResponse<String>> addToCart(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody AddToCartRequest request) {
+        cartService.addToCart(JwtUtil.extractUserIdFromJwt(jwt), request);
 
         return ResponseEntity.ok(new BaseApiResponse<>(
                 HttpStatus.OK.value(),
@@ -37,33 +39,36 @@ public class CartController {
 
     @GetMapping
     public ResponseEntity<BaseApiResponse<CartResponse>> show(@AuthenticationPrincipal Jwt jwt) {
-        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
-        CartResponse cart = cartService.getCartByUserId(userId);
+        CartResponse cart = cartService.getCartByUserId(JwtUtil.extractUserIdFromJwt(jwt));
 
         return ResponseEntity.ok(new BaseApiResponse<>(
-            HttpStatus.OK.value(),
-            cart,
-            messageUtil.getMessage("cart.fetched.success")
+                HttpStatus.OK.value(),
+                cart,
+                messageUtil.getMessage("cart.fetched.success")
         ));
     }
 
     @PutMapping(CartApiPaths.Endpoint.UPDATE_QUANTITY)
-    public ResponseEntity<BaseApiResponse<String>> updateQuantity(@RequestBody UpdateCartItemRequest request) {
-        cartService.updateCartItemQuantity(request);
+    public ResponseEntity<BaseApiResponse<String>> updateQuantity(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody UpdateCartItemRequest request) {
+        cartService.updateCartItemQuantity(JwtUtil.extractUserIdFromJwt(jwt), request);
 
         return ResponseEntity.ok(new BaseApiResponse<>(
-            HttpStatus.OK.value(),
-            messageUtil.getMessage("cart.update.success")
+                HttpStatus.OK.value(),
+                messageUtil.getMessage("cart.update.success")
         ));
     }
 
     @DeleteMapping(CartApiPaths.Endpoint.REMOVE_ITEM)
-    public ResponseEntity<BaseApiResponse<String>> removeItem(@RequestBody RemoveCartItemRequest request) {
-        cartService.removeItemFromCart(request);
+    public ResponseEntity<BaseApiResponse<String>> removeItem(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody RemoveCartItemRequest request) {
+        cartService.removeItemFromCart(JwtUtil.extractUserIdFromJwt(jwt), request);
 
         return ResponseEntity.ok(new BaseApiResponse<>(
-            HttpStatus.OK.value(),
-            messageUtil.getMessage("cart.remove.item.success")
+                HttpStatus.OK.value(),
+                messageUtil.getMessage("cart.remove.item.success")
         ));
     }
 }

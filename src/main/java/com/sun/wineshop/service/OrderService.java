@@ -7,7 +7,7 @@ import com.sun.wineshop.dto.response.OrderSummaryResponse;
 import org.springframework.data.domain.Page;
 
 public interface OrderService {
-    OrderResponse placeOrder(PlaceOrderRequest request);
+    OrderResponse placeOrder(Long userId, PlaceOrderRequest request);
     OrderDetailResponse show(Long orderId, Long userId);
     Page<OrderSummaryResponse> getOrderHistory(Long userId, int pageNumber, int pageSize);
     void cancelOrder(Long orderId, Long userId);
