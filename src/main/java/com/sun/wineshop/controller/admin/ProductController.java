@@ -49,7 +49,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new BaseApiResponse<>(
                         HttpStatus.OK.value(),
-                        messageUtil.getMessage("category.delete.success")
+                        messageUtil.getMessage("product.delete.success")
                 )
         );
     }
