@@ -42,6 +42,10 @@ public enum ErrorCode {
     PRODUCT_CATEGORY_ID_NULL(40309, "error.product.category.id.null"),
     PRODUCT_IN_USE(40310, "error.product.in.use"),
     PRODUCT_NOT_FOUND(40311, "error.product.not.found"),
+
+    // Review
+    REVIEW_NOT_ALLOWED(40500, "error.review.not.allowed"),
+    REVIEW_ALREADY_EXISTS(40501, "error.review.already.exists"),
     ;
 
     private final int code;
