@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
         BaseApiResponse<Void> response = new BaseApiResponse<>();
         response.setCode(errorCode.getCode());
-        response.setMessage(messageUtil.getMessage(errorCode.getMessageKey()));
+        response.setMessage(messageUtil.getMessage(errorCode.getMessageKey(), exception.getArgs()));
 
         return ResponseEntity.badRequest().body(response);
     }

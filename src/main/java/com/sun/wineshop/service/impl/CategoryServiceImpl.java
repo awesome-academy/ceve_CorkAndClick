@@ -54,6 +54,10 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
+        if (!category.getProducts().isEmpty()) {
+            throw new AppException(ErrorCode.CATEGORY_IN_USE);
+        }
+
         category.setDeletedAt(LocalDateTime.now());
         categoryRepository.save(category);
     }

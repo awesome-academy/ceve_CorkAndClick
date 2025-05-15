@@ -12,15 +12,16 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("""
-        SELECT DISTINCT p FROM Product p
-        JOIN p.categories c
-        WHERE (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-            AND (:minPrice IS NULL OR p.price >= :minPrice)
-            AND (:maxPrice IS NULL OR p.price <= :maxPrice)
-            AND (:minAlcohol IS NULL OR p.alcoholPercentage >= :minAlcohol)
-            AND (:maxAlcohol IS NULL OR p.alcoholPercentage <= :maxAlcohol)
-            AND (:categoryIds IS NULL OR c.id IN :categoryIds)
-    """)
+                SELECT DISTINCT p FROM Product p
+                JOIN p.categories c
+                WHERE p.deletedAt IS NULL
+                    AND (:keyword IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                    AND (:minPrice IS NULL OR p.price >= :minPrice)
+                    AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+                    AND (:minAlcohol IS NULL OR p.alcoholPercentage >= :minAlcohol)
+                    AND (:maxAlcohol IS NULL OR p.alcoholPercentage <= :maxAlcohol)
+                    AND (:categoryIds IS NULL OR c.id IN :categoryIds)
+            """)
     Page<Product> searchProducts(
         @Param("keyword") String keyword,
         @Param("minPrice") Double minPrice,
@@ -30,4 +31,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         @Param("categoryIds") List<Long> categoryIds,
         Pageable pageable
     );
+    Page<Product> findAllByDeletedAtIsNull(Pageable pageable);
 }

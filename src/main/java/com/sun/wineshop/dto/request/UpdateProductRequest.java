@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-public record ProductRequest(
+public record UpdateProductRequest(
 
         @ValidProductName
         String name,
@@ -38,6 +38,5 @@ public record ProductRequest(
         @DecimalMax(value = "100.0", inclusive = true, message = "PRODUCT_ALCOHOL_PERCENTAGE_INVALID")
         Double alcoholPercentage,
 
-        @NotEmpty(message = "PRODUCT_CATEGORIES_REQUIRED")
         List<@NotNull(message = "PRODUCT_CATEGORY_ID_NULL") Long> categoryIds
 ) {}

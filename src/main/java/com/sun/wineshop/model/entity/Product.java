@@ -35,6 +35,7 @@ public class Product {
     LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 
     @ManyToMany
     @JoinTable(
