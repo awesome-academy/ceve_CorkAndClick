@@ -21,20 +21,22 @@ public class ReviewServiceImpl implements ReviewService {
     private final OrderItemRepository orderItemRepository;
 
     @Override
-    public void addReview(Long userId,ReviewRequest request) {
-        Product product = productRepository.findByIdAndDeletedAtIsNull(request.productId())
-                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+    public void addReview(Long userId, ReviewRequest request) {
+        Long productId = request.productId();
+
+        if (reviewRepository.existsByUserIdAndProductId(userId, productId)) {
+            throw new AppException(ErrorCode.REVIEW_ALREADY_EXISTS);
+        }
 
         boolean hasBoughtAndDelivered = orderItemRepository
-                .hasUserOrderedProduct(product.getId(), userId, OrderStatus.DELIVERED);
+                .hasUserOrderedProduct(productId, userId, OrderStatus.DELIVERED);
 
         if (!hasBoughtAndDelivered) {
             throw new AppException(ErrorCode.REVIEW_NOT_ALLOWED);
         }
 
-        if (reviewRepository.existsByUserIdAndProductId(userId, product.getId())) {
-            throw new AppException(ErrorCode.REVIEW_ALREADY_EXISTS);
-        }
+        Product product = productRepository.findByIdAndDeletedAtIsNull(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         Review review = Review.builder()
                 .userId(userId)

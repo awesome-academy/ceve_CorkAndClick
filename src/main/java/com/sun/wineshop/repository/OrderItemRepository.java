@@ -9,7 +9,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     boolean existsByProductId(Long productId);
 
     @Query("""
-    SELECT CASE WHEN COUNT(item) > 0 THEN true ELSE false END
+    SELECT COUNT(item) > 0
     FROM OrderItem item
     WHERE item.product.id = :productId
       AND item.order.userId = :userId
