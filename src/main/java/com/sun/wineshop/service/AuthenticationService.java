@@ -7,22 +7,25 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.wineshop.configuration.SecurityProperties;
 import com.sun.wineshop.dto.request.LoginRequest;
+import com.sun.wineshop.dto.request.LogoutRequest;
 import com.sun.wineshop.dto.request.VerifyTokenRequest;
 import com.sun.wineshop.dto.response.LoginResponse;
 import com.sun.wineshop.dto.response.VerifyTokenResponse;
+import com.sun.wineshop.model.entity.InvalidatedToken;
 import com.sun.wineshop.model.entity.User;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
+import com.sun.wineshop.repository.InvalidatedTokenRepository;
 import com.sun.wineshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,23 +33,22 @@ import java.util.Date;
 public class AuthenticationService {
 
     private final SecurityProperties securityProperties;
+    private final InvalidatedTokenRepository invalidatedTokenRepository;
     private static final String CLAIM_SCOPE = "scope";
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordService passwordService;
+    private final UserRepository userRepository;
+    private final PasswordService passwordService;
 
     public VerifyTokenResponse verifyToken(VerifyTokenRequest request)
             throws JOSEException, ParseException {
+        boolean isValid = true;
+        try {
+            checkValidToken(request.token());
+        } catch (AppException e) {
+            isValid = false;
+        }
 
-        String token = request.token();
-
-        JWSVerifier verifier = new MACVerifier(securityProperties.getJwt().getSignerKey().getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
-        boolean verified = signedJWT.verify(verifier);
-        return new VerifyTokenResponse(verified && expiration.after(new Date()));
+        return new VerifyTokenResponse(isValid);
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -60,6 +62,34 @@ public class AuthenticationService {
         return new LoginResponse(true, token);
     }
 
+    public void logout(LogoutRequest request) throws JOSEException, ParseException {
+        var signToken = checkValidToken(request.token());
+        String jid = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jid)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    private SignedJWT checkValidToken(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(securityProperties.getJwt().getSignerKey().getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
+        boolean verified = signedJWT.verify(verifier);
+
+        if (!(verified && expiration.after(new Date())))
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.INVALID_TOKEN);
+
+        return signedJWT;
+    }
+
     private String generateToken(User user) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -71,6 +101,7 @@ public class AuthenticationService {
                 ))
                 .claim(CLAIM_SCOPE, user.getRole())
                 .claim("userId", user.getId())
+                .jwtID(UUID.randomUUID().toString())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
