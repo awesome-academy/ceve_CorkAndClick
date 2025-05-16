@@ -12,16 +12,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-
-import javax.crypto.spec.SecretKeySpec;
 
 import static com.sun.wineshop.utils.api.AuthApiPaths.Endpoint.*;
 import static com.sun.wineshop.utils.api.UserApiPaths.Endpoint.FULL_REGISTER;
@@ -32,14 +27,14 @@ import static com.sun.wineshop.utils.api.UserApiPaths.Endpoint.FULL_REGISTER;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final SecurityProperties securityProperties;
     private static final String ROLE = "ROLE_";
-    private static final String ALGORITHM = "HS512";
 
-    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_VERIFY_TOKEN, ProductApiPaths.BASE_ALL,
+    private final String[] PUBLIC_ENDPOINTS = {FULL_REGISTER, FULL_LOGIN, FULL_LOGOUT, FULL_VERIFY_TOKEN,
+            ProductApiPaths.BASE_ALL,
             CategoryApiPaths.BASE};
 
     private final MessageUtil messageUtil;
+    private final CustomJwtDecoder jwtDecoder;
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
@@ -62,7 +57,7 @@ public class SecurityConfig {
                         .hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated());
         http.oauth2ResourceServer(oAuth2 ->
-                oAuth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                oAuth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(authenticationEntryPoint()));
         http.csrf(AbstractHttpConfigurer::disable);
@@ -80,17 +75,5 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
         return jwtAuthenticationConverter;
-    }
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(securityProperties
-                .getJwt()
-                .getSignerKey()
-                .getBytes(), ALGORITHM);
-        return NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512)
-                .build();
     }
 }

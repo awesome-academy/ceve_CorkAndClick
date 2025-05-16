@@ -18,6 +18,7 @@ public enum ErrorCode {
     CAN_NOT_CREATE_TOKEN(500, "error.can.not.create.token"),
     ACCESS_DENIED(403, "error.access.denied"),
     UNAUTHORIZED(401, "error.unauthorized"),
+    INVALID_TOKEN(401, "error.invalid.token"),
     CART_EMPTY(404, "error.cart.empty"),
     ORDER_NOT_FOUND(404, "error.order.not.found"),
     ORDER_CANNOT_BE_CANCELLED(400, "order.not.cancelled"),

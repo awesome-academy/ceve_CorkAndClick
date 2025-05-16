@@ -11,5 +11,6 @@ public class AuthApiPaths {
         // Use in security config.
         public static final String FULL_LOGIN = BASE + LOGIN;
         public static final String FULL_VERIFY_TOKEN = BASE + VERIFY_TOKEN;
+        public static final String FULL_LOGOUT = BASE + LOGOUT;
     }
 }
