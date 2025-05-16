@@ -6,6 +6,5 @@ public class ProductApiPaths {
 
     public static class Endpoint {
         public static final String SEARCH = "/search";
-        public static final String REVIEW = "/{productId}/reviews";
     }
 }

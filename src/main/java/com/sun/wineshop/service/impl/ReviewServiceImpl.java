@@ -21,8 +21,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final OrderItemRepository orderItemRepository;
 
     @Override
-    public void addReview(Long userId, Long productId,ReviewRequest request) {
-        Product product = productRepository.findByIdAndDeletedAtIsNull(productId)
+    public void addReview(Long userId,ReviewRequest request) {
+        Product product = productRepository.findByIdAndDeletedAtIsNull(request.productId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         boolean hasBoughtAndDelivered = orderItemRepository

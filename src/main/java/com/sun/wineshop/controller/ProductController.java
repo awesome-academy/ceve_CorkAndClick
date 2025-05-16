@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
-    private final ReviewService reviewService;
-    private final MessageUtil messageUtil;
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(Pageable pageable) {
@@ -43,19 +41,5 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
-    }
-
-    @PostMapping(ProductApiPaths.Endpoint.REVIEW)
-    public ResponseEntity<BaseApiResponse<Void>> addReview(
-            @PathVariable Long productId,
-            @RequestBody ReviewRequest request,
-            @AuthenticationPrincipal Jwt jwt
-    ) {
-        Long userId = JwtUtil.extractUserIdFromJwt(jwt);
-        reviewService.addReview(userId, productId, request);
-        return ResponseEntity.ok(new BaseApiResponse<>(
-                HttpStatus.OK.value(),
-                messageUtil.getMessage("review.add.success")
-        ));
     }
 }
