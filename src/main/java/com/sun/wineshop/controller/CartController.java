@@ -6,7 +6,6 @@ import com.sun.wineshop.dto.request.UpdateCartItemRequest;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.dto.response.CartResponse;
 import com.sun.wineshop.service.CartService;
-import com.sun.wineshop.utils.AppConstants;
 import com.sun.wineshop.utils.JwtUtil;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.CartApiPaths;
