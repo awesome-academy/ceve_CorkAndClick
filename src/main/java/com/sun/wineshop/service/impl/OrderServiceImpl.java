@@ -1,6 +1,7 @@
 package com.sun.wineshop.service.impl;
 
 import com.sun.wineshop.dto.request.PlaceOrderRequest;
+import com.sun.wineshop.dto.request.UpdateOrderStatusRequest;
 import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
@@ -118,5 +119,47 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
+    }
+
+    @Override
+    public Page<OrderDetailResponse> getOrders(OrderStatus status, Pageable pageable) {
+        Page<Order> orders;
+
+        if (status != null) {
+            orders = orderRepository.findOrderByStatus(status, pageable);
+        } else {
+            orders = orderRepository.findAll(pageable);
+        }
+
+        return orders.map(ToDtoMappers::toOrderDetailResponse);
+    }
+
+    @Override
+    public OrderDetailResponse getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        return ToDtoMappers.toOrderDetailResponse(order);
+    }
+
+    public OrderDetailResponse updateOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (request.status() == OrderStatus.REJECTED && (request.reason() == null || request.reason().isBlank())) {
+            throw new AppException(ErrorCode.ORDER_REJECT_REASON_REQUIRED);
+        }
+
+        order.setStatus(request.status());
+
+        if (request.status() == OrderStatus.REJECTED) {
+            order.setRejectReason(request.reason());
+        } else {
+            order.setRejectReason(null);
+        }
+        Order saved = orderRepository.save(order);
+
+        return ToDtoMappers.toOrderDetailResponse(saved);
     }
 }

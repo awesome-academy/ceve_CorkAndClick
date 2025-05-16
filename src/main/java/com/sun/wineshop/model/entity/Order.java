@@ -3,6 +3,7 @@ package com.sun.wineshop.model.entity;
 import com.sun.wineshop.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -16,23 +17,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "orderItems")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    private Long userId;
-    private Double totalAmount;
-    private String recipientName;
-    private String address;
-    private String phoneNumber;
+    Long userId;
+    Double totalAmount;
+    String recipientName;
+    String address;
+    String phoneNumber;
+    String rejectReason;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    @Column(length = 20)
+    OrderStatus status;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    List<OrderItem> orderItems = new ArrayList<>();
 }
