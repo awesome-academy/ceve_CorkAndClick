@@ -22,6 +22,7 @@ public enum ErrorCode {
     CART_EMPTY(404, "error.cart.empty"),
     ORDER_NOT_FOUND(404, "error.order.not.found"),
     ORDER_CANNOT_BE_CANCELLED(400, "order.not.cancelled"),
+    ORDER_REJECT_REASON_REQUIRED(400, "error.order.reject.reason.required"),
 
     // Category
     CATEGORY_NAME_INVALID(40200, "error.category.name.invalid"),

@@ -70,6 +70,7 @@ public class ToDtoMappers {
                 order.getAddress(),
                 order.getPhoneNumber(),
                 order.getStatus().name(),
+                order.getRejectReason(),
                 order.getTotalAmount(),
                 order.getCreatedAt(),
                 itemResponses
