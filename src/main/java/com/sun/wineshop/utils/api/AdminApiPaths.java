@@ -16,17 +16,20 @@ public class AdminApiPaths {
         public static final String ADMIN_PRODUCT_CONTROLLER = "adminProductController";
         public static final String BASE = AdminApiPaths.BASE + "/products";
         public static final String BY_ID = "/{id}";
-        // ...
     }
 
     public static final class Category {
         public static final String ADMIN_CATEGORY_CONTROLLER = "adminCategoryController";
         public static final String BASE = AdminApiPaths.BASE + "/categories";
         public static final String BY_ID = "/{id}";
-        // ...
     }
 
-    // Add more for Order, Comment, Category...
+    public static final class Order {
+        public static final String ADMIN_ORDER_CONTROLLER = "adminOrderController";
+        public static final String BASE = AdminApiPaths.BASE + "/orders";
+        public static final String BY_ID = "/{id}";
+        public static final String UPDATE_STATUS = "/{id}/updateStatus";
+    }
 
     private AdminApiPaths() {
         // Prevent instantiation

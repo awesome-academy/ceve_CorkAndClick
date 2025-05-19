@@ -10,6 +10,7 @@ public record OrderDetailResponse(
         String address,
         String phoneNumber,
         String status,
+        String rejectReason,
         double totalAmount,
         LocalDateTime createdAt,
         List<OrderItemResponse> items
