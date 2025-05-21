@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     private final MessageUtil messageUtil;
 
-    @ExceptionHandler( AccessDeniedException.class)
+    @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<BaseApiResponse<Void>> handleAccessDeniedException(AccessDeniedException e) {
         ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
 
