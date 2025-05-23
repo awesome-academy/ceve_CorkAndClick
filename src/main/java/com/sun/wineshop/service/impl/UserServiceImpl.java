@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
     @Value("${app.base-url}")
     private String baseUrl;
 
+    @Transactional
     public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.existsUserByUsername(request.username()))
             throw new AppException(ErrorCode.USER_EXISTED);
