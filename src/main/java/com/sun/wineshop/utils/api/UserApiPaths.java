@@ -7,6 +7,7 @@ public class UserApiPaths {
     public static class Endpoint {
         public static final String REGISTER = "/register";
         public static final String INFO = "/info";
+        public static final String FULL_INFO = BASE +  INFO;
         public static final String FULL_REGISTER = BASE + REGISTER;
     }
 }

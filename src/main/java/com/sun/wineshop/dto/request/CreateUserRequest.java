@@ -2,9 +2,11 @@ package com.sun.wineshop.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record CreateUserRequest(
         @NotBlank(message = "USERNAME_BLANK")
         @Size(min = 3, message = "USERNAME_INVALID_SIZE")
