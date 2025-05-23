@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         VerificationToken verificationToken = VerificationToken.builder()
                 .token(token)
                 .user(user)
-                .expiryDate(LocalDateTime.now().plusDays(1))
+                .expiryDate(LocalDateTime.now().plusMinutes(1))
                 .build();
         tokenRepository.save(verificationToken);
 
