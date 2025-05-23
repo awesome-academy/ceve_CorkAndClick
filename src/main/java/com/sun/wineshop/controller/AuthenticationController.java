@@ -11,13 +11,9 @@ import com.sun.wineshop.service.AuthenticationService;
 import com.sun.wineshop.utils.MessageUtil;
 import com.sun.wineshop.utils.api.AuthApiPaths;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -57,5 +53,15 @@ public class AuthenticationController {
                         messageUtil.getMessage("auth.logout.success")
                 )
         );
+    }
+
+    @GetMapping(AuthApiPaths.Endpoint.ACTIVATE)
+    public ResponseEntity<BaseApiResponse<String>> activateAccount(@RequestParam String token) {
+        authenticationService.activateAccount(token);
+
+        return ResponseEntity.ok(new BaseApiResponse<>(
+                HttpStatus.OK.value(),
+                messageUtil.getMessage("auth.activate.account.success")
+        ));
     }
 }

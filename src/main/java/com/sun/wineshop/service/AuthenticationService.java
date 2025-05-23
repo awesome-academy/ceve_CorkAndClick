@@ -15,14 +15,17 @@ import com.sun.wineshop.model.entity.InvalidatedToken;
 import com.sun.wineshop.model.entity.User;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
+import com.sun.wineshop.model.entity.VerificationToken;
 import com.sun.wineshop.repository.InvalidatedTokenRepository;
 import com.sun.wineshop.repository.UserRepository;
+import com.sun.wineshop.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
@@ -38,6 +41,7 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordService passwordService;
+    private final VerificationTokenRepository verificationTokenRepository;
 
     public VerifyTokenResponse verifyToken(VerifyTokenRequest request)
             throws JOSEException, ParseException {
@@ -73,6 +77,21 @@ public class AuthenticationService {
                 .build();
 
         invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    public void activateAccount(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_VERIFICATION_TOKEN));
+
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new AppException(ErrorCode.INVALID_VERIFICATION_TOKEN);
+        }
+
+        User user = verificationToken.getUser();
+        user.setActive(true);
+
+        userRepository.save(user);
+        verificationTokenRepository.delete(verificationToken);
     }
 
     private SignedJWT checkValidToken(String token) throws JOSEException, ParseException {

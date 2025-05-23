@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 public class SecurityProperties {
     private Jwt jwt;
     private Admin admin;
+    private Mail mail;
 
     @Data
     public static class Jwt {
@@ -23,5 +24,10 @@ public class SecurityProperties {
     public static class Admin {
         private String username;
         private String password;
+    }
+
+    @Data
+    public static class Mail {
+        private String owner;
     }
 }
