@@ -24,6 +24,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -125,7 +126,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(HttpStatus.OK.value()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("riophan"));
     }
@@ -152,7 +153,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(40101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ErrorCode.USERNAME_INVALID_SIZE.getCode()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Username must be at least 3 characters!"));
 
     }
@@ -178,7 +179,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(40103))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(ErrorCode.PASSWORD_INVALID_SIZE.getCode()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Password must be at least 8 characters!"));
     }
 
@@ -189,7 +190,7 @@ class UserControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get(UserApiPaths.Endpoint.FULL_INFO))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(HttpStatus.OK.value()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("riophan"));
     }
 
