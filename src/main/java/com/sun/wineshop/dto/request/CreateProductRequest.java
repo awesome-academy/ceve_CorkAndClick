@@ -2,9 +2,11 @@ package com.sun.wineshop.dto.request;
 
 import com.sun.wineshop.validator.ValidProductName;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.util.List;
 
+@Builder
 public record CreateProductRequest(
 
         @ValidProductName
