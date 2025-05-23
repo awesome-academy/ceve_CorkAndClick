@@ -76,45 +76,6 @@ public class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Page<ProductResponse> emptyPaginatedProductResponse(Pageable pageable) {
-        return new PageImpl<>(Collections.emptyList(), pageable, 0);
-    }
-
-    private ProductResponse defaultProductResponse(Long id, String name) {
-        List<CategoryResponse> categories = Collections.emptyList();
-        return new ProductResponse(
-                id, name, "description",
-                "http://example.com/image.jpg",
-                25.99, "Russian", 750, 100, 13.5,
-                categories, LocalDateTime.now().minusDays(1), LocalDateTime.now()
-        );
-    }
-
-    private Page<ProductResponse> defaultPaginatedProductResponse(Pageable pageable) {
-        List<ProductResponse> productList = List.of(
-                defaultProductResponse(1L, "Test Wine 1"),
-                defaultProductResponse(2L, "Test Wine 2")
-        );
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), productList.size());
-        List<ProductResponse> pageContent = productList.subList(start, end);
-        return new PageImpl<>(pageContent, pageable, productList.size());
-    }
-
-    private ProductSearchRequest defaultProductSearchRequest() {
-        return new ProductSearchRequest(
-                "Test Wine", 10.0, 100.0,
-                11.5, 15.0, List.of(1L, 3L)
-        );
-    }
-
-    private ProductSearchRequest emptyProductSearchRequest() {
-        return new ProductSearchRequest(
-                null, null, null,
-                null, null, Collections.emptyList()
-        );
-    }
-
     @Test
     void getAllProducts_success_shouldReturnPageOfProducts() throws Exception {
         int pageNumber = 0;
@@ -248,5 +209,44 @@ public class ProductControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code", is(ErrorCode.UNCATEGORIZED.getCode())))
                 .andExpect(jsonPath("$.message", is(expectedUncategorizedMessage)));
+    }
+
+    private Page<ProductResponse> emptyPaginatedProductResponse(Pageable pageable) {
+        return new PageImpl<>(Collections.emptyList(), pageable, 0);
+    }
+
+    private ProductResponse defaultProductResponse(Long id, String name) {
+        List<CategoryResponse> categories = Collections.emptyList();
+        return new ProductResponse(
+                id, name, "description",
+                "http://example.com/image.jpg",
+                25.99, "Russian", 750, 100, 13.5,
+                categories, LocalDateTime.now().minusDays(1), LocalDateTime.now()
+        );
+    }
+
+    private Page<ProductResponse> defaultPaginatedProductResponse(Pageable pageable) {
+        List<ProductResponse> productList = List.of(
+                defaultProductResponse(1L, "Test Wine 1"),
+                defaultProductResponse(2L, "Test Wine 2")
+        );
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), productList.size());
+        List<ProductResponse> pageContent = productList.subList(start, end);
+        return new PageImpl<>(pageContent, pageable, productList.size());
+    }
+
+    private ProductSearchRequest defaultProductSearchRequest() {
+        return new ProductSearchRequest(
+                "Test Wine", 10.0, 100.0,
+                11.5, 15.0, List.of(1L, 3L)
+        );
+    }
+
+    private ProductSearchRequest emptyProductSearchRequest() {
+        return new ProductSearchRequest(
+                null, null, null,
+                null, null, Collections.emptyList()
+        );
     }
 }
