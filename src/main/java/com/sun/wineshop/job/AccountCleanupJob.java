@@ -36,10 +36,11 @@ public class AccountCleanupJob {
 
             if (!user.isActive()) {
                 log.info("[CLEANUP] Remove account inactive: {}", user.getEmail());
+                tokenRepository.delete(token);
                 userRepository.delete(user);
+            } else {
+                tokenRepository.delete(token);
             }
-
-            tokenRepository.delete(token);
         }
 
         log.info("[CLEANUP] Done clean {} token.", expiredTokens.size());
