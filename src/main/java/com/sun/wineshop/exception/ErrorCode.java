@@ -47,6 +47,9 @@ public enum ErrorCode {
     // Review
     REVIEW_NOT_ALLOWED(40500, "error.review.not.allowed"),
     REVIEW_ALREADY_EXISTS(40501, "error.review.already.exists"),
+
+    // Mail
+    SEND_MAIL_FAIL(40701, "send.mail.fail"),
     ;
 
     private final int code;
