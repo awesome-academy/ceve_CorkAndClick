@@ -1,7 +1,7 @@
 package com.sun.wineshop.controller;
 
 
-import com.sun.wineshop.dto.response.MonthlyRevenueResponse;
+import com.sun.wineshop.dto.response.MonthlyOrderStats;
 import com.sun.wineshop.service.RevenueService;
 import com.sun.wineshop.utils.api.RevenueApiPaths;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class RevenueController {
     private final RevenueService revenueService;
 
     @GetMapping(RevenueApiPaths.Endpoint.MONTHLY)
-    public List<MonthlyRevenueResponse> getMonthlyRevenue() {
-        return revenueService.getMonthlyRevenue();
+    public List<MonthlyOrderStats> getMonthlyRevenue() {
+        return revenueService.getMonthlyOrderStatistics();
     }
 }
