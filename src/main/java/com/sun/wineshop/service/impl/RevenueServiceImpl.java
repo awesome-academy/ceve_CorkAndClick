@@ -1,6 +1,6 @@
 package com.sun.wineshop.service.impl;
 
-import com.sun.wineshop.dto.response.MonthlyRevenueResponse;
+import com.sun.wineshop.dto.response.MonthlyOrderStats;
 import com.sun.wineshop.repository.OrderRepository;
 import com.sun.wineshop.service.RevenueService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class RevenueServiceImpl implements RevenueService {
     private final OrderRepository orderRepository;
 
     @Override
-    public List<MonthlyRevenueResponse> getMonthlyRevenue() {
-        return orderRepository.getMonthlyRevenue();
+    public List<MonthlyOrderStats> getMonthlyOrderStatistics() {
+        return orderRepository.getMonthlyOrderStatistics();
     }
 }
