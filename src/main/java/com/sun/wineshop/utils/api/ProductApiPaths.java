@@ -6,5 +6,7 @@ public class ProductApiPaths {
 
     public static class Endpoint {
         public static final String SEARCH = "/search";
+        public static final String EXPORT = "/export";
+        public static final String IMPORT = "/import";
     }
 }

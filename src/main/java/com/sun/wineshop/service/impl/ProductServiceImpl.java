@@ -129,4 +129,14 @@ public class ProductServiceImpl implements ProductService {
             }
         }
     }
+
+    @Override
+    public List<Product> getAllProductsForExport() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public void saveAll(List<Product> products) {
+        productRepository.saveAll(products);
+    }
 }

@@ -11,4 +11,8 @@ public class AppConstants {
     //Pageable
     public static final String DEFAULT_PAGE_NUMBER = "0";
     public static final String DEFAULT_PAGE_SIZE = "10";
+
+    // Product
+    public static  final String EXPORT_PRODUCT_FILE_NAME="attachment; filename=products.xlsx";
+    public static  final String IMPORT_TYPE="file";
 }

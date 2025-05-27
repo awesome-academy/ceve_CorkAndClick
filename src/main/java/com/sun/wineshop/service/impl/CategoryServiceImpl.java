@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sun.wineshop.mapper.ToDtoMappers.toCategoryResponse;
 
@@ -60,5 +62,19 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setDeletedAt(LocalDateTime.now());
         categoryRepository.save(category);
+    }
+
+    public List<Category> findOrCreateByNames(List<String> names) {
+        List<Category> result = new ArrayList<>();
+
+        for (String name : names) {
+            Category category = categoryRepository.findByName(name)
+                    .orElseGet(() -> categoryRepository.save(
+                            Category.builder().name(name).build()
+                    ));
+            result.add(category);
+        }
+
+        return result;
     }
 }
