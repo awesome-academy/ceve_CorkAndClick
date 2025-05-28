@@ -65,16 +65,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public List<Category> findOrCreateByNames(List<String> names) {
-        List<Category> result = new ArrayList<>();
+        List<Category> results = new ArrayList<>();
 
         for (String name : names) {
             Category category = categoryRepository.findByName(name)
                     .orElseGet(() -> categoryRepository.save(
                             Category.builder().name(name).build()
                     ));
-            result.add(category);
+            results.add(category);
         }
 
-        return result;
+        return results;
     }
 }
