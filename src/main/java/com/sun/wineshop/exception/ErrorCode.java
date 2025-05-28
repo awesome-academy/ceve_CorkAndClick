@@ -47,6 +47,12 @@ public enum ErrorCode {
     // Review
     REVIEW_NOT_ALLOWED(40500, "error.review.not.allowed"),
     REVIEW_ALREADY_EXISTS(40501, "error.review.already.exists"),
+
+    // Product
+    EXPORT_PRODUCT_FAIL(40601, "export.product.fail"),
+    IMPORT_PRODUCT_FAIL(40602, "import.product.fail"),
+    IMPORT_FILE_EMPTY(40603, "import.product.empty"),
+    IMPORT_MISSING_COLUMN(40604, "import.missing.column"),
     ;
 
     private final int code;
