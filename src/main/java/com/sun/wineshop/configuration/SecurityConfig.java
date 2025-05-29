@@ -52,6 +52,9 @@ public class SecurityConfig {
                 requests
                         // add end points with not auth here
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        // for test websocket
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/order-notification-test.html").permitAll()
                         // add end points for admin here
                         .requestMatchers(AdminApiPaths.BASE_ALL)
                         .hasRole(UserRole.ADMIN.name())
