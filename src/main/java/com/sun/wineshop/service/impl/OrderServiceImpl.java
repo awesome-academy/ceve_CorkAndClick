@@ -5,6 +5,7 @@ import com.sun.wineshop.dto.response.OrderDetailResponse;
 import com.sun.wineshop.dto.response.OrderItemResponse;
 import com.sun.wineshop.dto.response.OrderResponse;
 import com.sun.wineshop.dto.response.OrderSummaryResponse;
+import com.sun.wineshop.dto.websocket.OrderNotification;
 import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.mapper.ToDtoMappers;
@@ -14,12 +15,16 @@ import com.sun.wineshop.repository.CartRepository;
 import com.sun.wineshop.repository.OrderRepository;
 import com.sun.wineshop.repository.ProductRepository;
 import com.sun.wineshop.service.OrderService;
+import com.sun.wineshop.utils.AppConstants;
+import com.sun.wineshop.utils.MessageUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +37,10 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final MessageUtil messageUtil;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     @Override
@@ -118,5 +127,26 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
+    }
+
+    @Override
+    public void updateOrderStatus(Long orderId, OrderStatus newStatus, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+
+        if (newStatus == OrderStatus.DELIVERING) {
+            OrderNotification notification = new OrderNotification(
+                    order.getId(),
+                    order.getStatus().name(),
+                    order.getTotalAmount(),
+                    messageUtil.getMessage("order.status.delivering")
+            );
+
+            messagingTemplate.convertAndSend(AppConstants.WS_ORDER_TOPIC + order.getUserId(), notification);
+        }
     }
 }

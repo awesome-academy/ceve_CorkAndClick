@@ -26,6 +26,13 @@ public class AdminApiPaths {
         // ...
     }
 
+    public static final class Order {
+        public static final String ADMIN_ORDER_CONTROLLER = "adminOrderController";
+        public static final String BASE = AdminApiPaths.BASE + "/orders";
+        public static final String UPDATE_STATUS = "/{orderId}/status";
+        // ...
+    }
+
     // Add more for Order, Comment, Category...
 
     private AdminApiPaths() {

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Notification Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>Order Notification Tester</h2>
+
+<label>User ID: </label>
+<input type="number" id="userId" placeholder="Enter user ID" /><br><br>
+
+<label>JWT Token: </label>
+<input type="text" id="jwtToken" placeholder="Paste your JWT token" size="100"/><br><br>
+
+<button onclick="connect()">Connect WebSocket</button>
+<button onclick="disconnect()">Disconnect Websocket</button>
+
+<ul id="messages"></ul>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const userId = document.getElementById("userId").value.trim();
+        const jwtToken = document.getElementById("jwtToken").value.trim();
+
+        if (!userId || !jwtToken) {
+            alert("Please input both User ID and JWT Token");
+            return;
+        }
+
+        const socket = new SockJS("http://localhost:8080/ws");
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect(
+            { Authorization: "Bearer " + jwtToken },
+            function () {
+                console.log("✅ WebSocket connected");
+
+                stompClient.subscribe(`/topic/orders-user-${userId}`, function (message) {
+                    const notification = JSON.parse(message.body);
+                    const li = document.createElement("li");
+                    li.textContent = `[Order #${notification.orderId}] ${notification.message} (Status: ${notification.status}, Total: $${notification.totalAmount})`;
+                    document.getElementById("messages").appendChild(li);
+                });
+            },
+            function (error) {
+                console.error("❌ WebSocket error", error);
+                alert("Connect WebSocket error. Please check again.");
+            }
+        );
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect(() => {
+                console.log("🔌 WebSocket disconnected");
+            });
+        }
+    }
+</script>
+</body>
+</html>

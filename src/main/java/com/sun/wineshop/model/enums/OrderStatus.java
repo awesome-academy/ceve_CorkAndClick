@@ -1,5 +1,5 @@
 package com.sun.wineshop.model.enums;
 
 public enum OrderStatus {
-    PENDING, PAID, DELIVERING, DELIVERED, CANCELLED
+    PENDING, PAID, DELIVERING, DELIVERED, CANCELLED, REJECTED
 }
