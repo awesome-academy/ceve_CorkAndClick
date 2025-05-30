@@ -40,6 +40,13 @@ public class AdminApiPaths {
         public static final String UPDATE_STATUS = "/{id}/updateStatus";
     }
 
+    public static class Chat {
+        public static final String ADMIN_CHAT_CONTROLLER = "adminChatController";
+        public static final String BASE = AdminApiPaths.BASE + "/chat";
+        public static final String WEBSOCKET_BROKER = "/topic/messages/admin";
+        public static final String SEND = "/admin/chat.send";
+    }
+
     private AdminApiPaths() {
         // Prevent instantiation
     }

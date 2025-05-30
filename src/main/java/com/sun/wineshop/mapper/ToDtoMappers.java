@@ -96,4 +96,12 @@ public class ToDtoMappers {
                 task.getFinishedAt()
         );
     }
+
+    public static MessageResponse toMessageResponse(Message message) {
+        return new MessageResponse(
+                message.getSenderRole(),
+                message.getContent(),
+                message.getTimestamp()
+        );
+    }
 }

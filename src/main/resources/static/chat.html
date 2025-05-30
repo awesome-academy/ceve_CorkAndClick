@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link rel="icon" href="data:,">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .panel {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .panel:last-child {
+            border-right: none;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .messages li {
+            margin: 8px 0;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .user-msg {
+            background-color: #e0f7fa;
+            align-self: flex-start;
+        }
+
+        .admin-msg {
+            background-color: #fce4ec;
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            width: 70%;
+        }
+
+        button {
+            padding: 6px 12px;
+        }
+        .message {
+  max-width: 60%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.message-left {
+  background-color: #ffe6e6;
+  text-align: left;
+  float: left;
+  clear: both;
+}
+
+.message-right {
+  background-color: #d4f7d4;
+  text-align: right;
+  float: right;
+  clear: both;
+}
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+
+    <!-- User panel -->
+    <div class="panel" id="userPanel">
+        <h2>User Box</h2>
+        <ul id="userMessages" class="messages"></ul>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type a message..."/>
+            <button onclick="sendMessageAsUser()">Send</button>
+        </div>
+    </div>
+
+    <!-- Admin panel -->
+    <div class="panel" id="adminPanel">
+        <h2>Admin Box</h2>
+        <ul id="adminMessages" class="messages"></ul>
+        <div class="chat-input">
+            <input type="text" id="adminInput" placeholder="Type a reply..."/>
+            <button onclick="sendMessageAsAdmin()">Reply</button>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    const token = "input_user_token_here_to_test";
+
+    function parseJwt(token) {
+        const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(atob(base64));
+    }
+    const decodedJwt = parseJwt(token);
+    const userId = decodedJwt.userId;
+    const currentUserRole = decodedJwt.scope || decodedJwt.role || "USER";
+
+    const socket = new SockJS("/ws/chat");
+    const stompClient = Stomp.over(socket);
+
+    const headers = {
+        Authorization: `Bearer ${token}`
+    };
+
+    stompClient.connect(headers, () => {
+        console.log("✅ Connected to WebSocket");
+        stompClient.subscribe(`/topic/messages/${userId}`, (msg) => {
+            const data = JSON.parse(msg.body);
+            const isCurrentUser = data.senderRole === 'USER';
+            appendMessage('userMessages', data, isCurrentUser);
+        });
+
+        stompClient.subscribe(`/topic/messages/admin`, (msg) => {
+            const data = JSON.parse(msg.body);
+            const isCurrentUser = data.senderRole === 'ADMIN';
+            appendMessage('adminMessages', data, isCurrentUser);
+        });
+
+    }, (error) => {
+        console.error("❌ WebSocket connection error:", error);
+    });
+
+    function sendMessageAsUser() {
+        const input = document.getElementById("userInput");
+        const content = input.value.trim();
+        if (!content) return;
+
+        stompClient.send("/app/chat.send.user", headers, JSON.stringify({
+            content: content,
+            userId: userId,
+            sender: "USER"
+        }));
+        input.value = "";
+    }
+
+    function sendMessageAsAdmin() {
+        const input = document.getElementById("adminInput");
+        const content = input.value.trim();
+        if (!content) return;
+
+        stompClient.send("/app/admin/chat.send", headers, JSON.stringify({
+            content: content,
+            userId: userId,
+            sender: "ADMIN"
+        }));
+        input.value = "";
+    }
+
+    function appendMessage(containerId, data, isCurrentUser) {
+        const ul = document.getElementById(containerId);
+        const li = document.createElement("li");
+
+        li.className = "message " + (isCurrentUser ? "message-right" : "message-left");
+
+        const time = new Date(data.timestamp).toLocaleTimeString();
+        const senderLabel = data.senderRole ? `${data.senderRole}: ` : "";
+
+        li.textContent = `[${time}] ${senderLabel}${data.content}`;
+        ul.appendChild(li);
+        ul.scrollTop = ul.scrollHeight;
+    }
+</script>
+</body>
+</html>
