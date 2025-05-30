@@ -21,6 +21,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordService passwordService;
+    @Autowired
+    private MailService mailService;
 
     public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.existsUserByUsername(request.username()))
@@ -37,6 +39,8 @@ public class UserService {
                 .role(UserRole.USER.name())
                 .build();
         User savedUser = userRepository.save(user);
+
+        mailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
         return ToDtoMappers.toUserResponse(savedUser);
     }
