@@ -85,4 +85,15 @@ public class ToDtoMappers {
                 order.getCreatedAt()
         );
     }
+
+    public static ImportTaskResponse toImportTaskResponse(ImportTask task) {
+        return new ImportTaskResponse(
+                task.getId(),
+                task.getFileName(),
+                task.getStatus().name(),
+                task.getErrorMessage(),
+                task.getStartedAt(),
+                task.getFinishedAt()
+        );
+    }
 }

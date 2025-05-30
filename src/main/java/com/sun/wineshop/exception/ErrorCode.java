@@ -49,6 +49,12 @@ public enum ErrorCode {
     // Review
     REVIEW_NOT_ALLOWED(40500, "error.review.not.allowed"),
     REVIEW_ALREADY_EXISTS(40501, "error.review.already.exists"),
+
+    // Poi
+    EXCEL_IMPORT_FAIL(500, "file.import.fail"),
+    EXCEL_EXPORT_FAIL(500, "file.export.fail"),
+    EXCEL_IMPORT_FILE_EMPTY(40600, "file.empty"),
+    TASK_NOT_FOUND(404, "error.task.not.found"),
     ;
 
     private final int code;

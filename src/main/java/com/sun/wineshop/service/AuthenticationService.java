@@ -118,7 +118,7 @@ public class AuthenticationService {
                 .issuer(securityProperties.getJwt().getDomain())
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()
                 ))
                 .claim(CLAIM_SCOPE, user.getRole())
                 .claim("userId", user.getId())

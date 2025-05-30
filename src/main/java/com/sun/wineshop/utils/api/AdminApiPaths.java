@@ -18,6 +18,15 @@ public class AdminApiPaths {
         public static final String BY_ID = "/{id}";
     }
 
+    public static final class  Poi {
+        public static final String ADMIN_POI_CONTROLLER = "adminPoiController";
+        public static final String BASE = AdminApiPaths.BASE + "/poi";
+        public static final String PRODUCTS = BASE + "/products";
+        public static final String EXCEL_EXPORT = "/excelExport";
+        public static final String EXCEL_IMPORT = "/excelImport";
+        public static final String IMPORT_STATUS_BY_ID = "/import/{id}/status";
+    }
+
     public static final class Category {
         public static final String ADMIN_CATEGORY_CONTROLLER = "adminCategoryController";
         public static final String BASE = AdminApiPaths.BASE + "/categories";
