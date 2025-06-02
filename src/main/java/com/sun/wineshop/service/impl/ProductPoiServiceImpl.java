@@ -32,6 +32,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.sun.wineshop.utils.ExcelCellUtils.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -194,40 +196,6 @@ public class ProductPoiServiceImpl implements ProductPoiService {
         ImportTask task = importTaskRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.TASK_NOT_FOUND));
         return ToDtoMappers.toImportTaskResponse(task);
-    }
-
-    private boolean isRowEmpty(Row row) {
-        if (row == null) return true;
-        for (int c = 0; c <= row.getLastCellNum(); c++) {
-            Cell cell = row.getCell(c);
-            if (cell != null && cell.getCellType() != CellType.BLANK) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String getString(Row row, int cellIndex) {
-        Cell cell = row.getCell(cellIndex);
-        if (cell == null) return "";
-
-        return switch (cell.getCellType()) {
-            case STRING -> cell.getStringCellValue().trim();
-            case NUMERIC -> String.valueOf((long) cell.getNumericCellValue());
-            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
-            case FORMULA -> cell.getCellFormula();
-            default -> "";
-        };
-    }
-
-    private Double getDouble(Row row, int cellIndex) {
-        Cell cell = row.getCell(cellIndex);
-        return cell == null ? null : cell.getNumericCellValue();
-    }
-
-    private Integer getInteger(Row row, int cellIndex) {
-        Double value = getDouble(row, cellIndex);
-        return value == null ? null : value.intValue();
     }
 
     private List<Category> findDistinctByName(List<String> names) {

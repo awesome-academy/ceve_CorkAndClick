@@ -3,6 +3,7 @@ package com.sun.wineshop.exception;
 import com.sun.wineshop.dto.response.BaseApiResponse;
 import com.sun.wineshop.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -60,6 +62,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseApiResponse<Void>> handleUnexpectedException(Exception e) {
+        log.error("Exception: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.UNCATEGORIZED;
 
         BaseApiResponse<Void> response = new BaseApiResponse<>();
@@ -71,6 +74,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<BaseApiResponse<Void>> handleRuntimeException(RuntimeException e) {
+        log.error("RuntimeException: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.UNCATEGORIZED;
 
         BaseApiResponse<Void> response = new BaseApiResponse<>();
