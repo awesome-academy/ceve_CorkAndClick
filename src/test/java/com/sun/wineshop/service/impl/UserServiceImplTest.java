@@ -6,6 +6,8 @@ import com.sun.wineshop.exception.AppException;
 import com.sun.wineshop.exception.ErrorCode;
 import com.sun.wineshop.model.entity.User;
 import com.sun.wineshop.repository.UserRepository;
+import com.sun.wineshop.repository.VerificationTokenRepository;
+import com.sun.wineshop.service.EmailService;
 import com.sun.wineshop.service.PasswordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +42,12 @@ class UserServiceImplTest {
 
     @Mock
     private PasswordService passwordService;
+
+    @Mock
+    private VerificationTokenRepository tokenRepository;
+
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -69,6 +78,7 @@ class UserServiceImplTest {
                 .password("hashedPwd")
                 .role("USER")
                 .build();
+        ReflectionTestUtils.setField(userService, "baseUrl", "http://localhost:8080");
     }
 
     @Test
