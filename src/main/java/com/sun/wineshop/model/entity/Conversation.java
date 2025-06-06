@@ -26,5 +26,6 @@ public class Conversation {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Message> messages = new ArrayList<>();
 }
